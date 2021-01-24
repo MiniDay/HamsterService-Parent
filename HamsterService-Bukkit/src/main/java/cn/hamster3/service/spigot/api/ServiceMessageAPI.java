@@ -3,7 +3,10 @@ package cn.hamster3.service.spigot.api;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.spigot.handler.ServiceConnection;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
+import java.util.UUID;
 
 /**
  * 服务消息API
@@ -111,6 +114,31 @@ public abstract class ServiceMessageAPI {
      */
     public static void sendMessage(ServiceMessageInfo info, boolean block) {
         connection.sendMessage(info, block);
+    }
+
+    /**
+     * 给玩家发送一条消息
+     *
+     * @param uuid    玩家
+     * @param message 消息
+     */
+    public static void sendPlayerMessage(UUID uuid, String message) {
+        JsonObject object = new JsonObject();
+        object.addProperty("text", message);
+        sendPlayerMessage(uuid, object);
+    }
+
+    /**
+     * 给玩家发送一条消息
+     *
+     * @param uuid    玩家
+     * @param message 消息
+     */
+    public static void sendPlayerMessage(UUID uuid, JsonElement message) {
+        JsonObject object = new JsonObject();
+        object.addProperty("uuid", uuid.toString());
+        object.add("message", message);
+        sendMessage("HamsterService", "sendPlayerMessage", message);
     }
 
 }

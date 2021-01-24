@@ -95,20 +95,20 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 break;
             }
             case "serverEnabled": {
-                JsonArray playerInfosJson = new JsonArray();
+                JsonArray playerInfoJson = new JsonArray();
                 for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                    playerInfosJson.add(playerInfo.saveToJson());
+                    playerInfoJson.add(playerInfo.saveToJson());
                 }
 
-                JsonArray senderInfosJson = new JsonArray();
+                JsonArray senderInfoJson = new JsonArray();
                 for (ServiceConnection connection : centre.getRegisteredHandlers()) {
-                    senderInfosJson.add(connection.getInfo().saveToJson());
+                    senderInfoJson.add(connection.getInfo().saveToJson());
                 }
 
                 JsonObject response = new JsonObject();
-                response.add("playerInfos", playerInfosJson);
-                response.add("senderInfos", senderInfosJson);
-                sendServiceMessage("resetInfos", response);
+                response.add("playerInfo", playerInfoJson);
+                response.add("senderInfo", senderInfoJson);
+                sendServiceMessage("resetAllInfo", response);
                 break;
             }
             case "subscribeTag": {

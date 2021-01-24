@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <name>HamsterService-Parent</name>
+    <url>https://github.com/MiniDay/HamsterService-Parent</url>
 
     <properties>
         <java.version>1.8</java.version>

@@ -37,18 +37,18 @@ public class ServiceMainListener implements Listener {
             return;
         }
         switch (info.getAction()) {
-            case "resetInfos": {
+            case "resetAllInfo": {
                 JsonObject object = info.getContent().getAsJsonObject();
-                HashSet<ServicePlayerInfo> playerInfos = new HashSet<>();
-                for (JsonElement element : object.getAsJsonArray("playerInfos")) {
-                    playerInfos.add(new ServicePlayerInfo(element.getAsJsonObject()));
+                HashSet<ServicePlayerInfo> playerInfo = new HashSet<>();
+                for (JsonElement element : object.getAsJsonArray("playerInfo")) {
+                    playerInfo.add(new ServicePlayerInfo(element.getAsJsonObject()));
                 }
-                serviceInfoAPI.resetAllPlayerInfo(playerInfos);
-                HashSet<ServiceSenderInfo> senderInfos = new HashSet<>();
-                for (JsonElement element : object.getAsJsonArray("senderInfos")) {
-                    senderInfos.add(new ServiceSenderInfo(element.getAsJsonObject()));
+                serviceInfoAPI.resetAllPlayerInfo(playerInfo);
+                HashSet<ServiceSenderInfo> senderInfo = new HashSet<>();
+                for (JsonElement element : object.getAsJsonArray("senderInfo")) {
+                    senderInfo.add(new ServiceSenderInfo(element.getAsJsonObject()));
                 }
-                serviceInfoAPI.resetAllServerInfo(senderInfos);
+                serviceInfoAPI.resetAllServerInfo(senderInfo);
                 break;
             }
             case "updatePlayerInfo": {

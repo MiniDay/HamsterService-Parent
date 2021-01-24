@@ -4,12 +4,14 @@ import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.bungee.event.ServiceConnectEvent;
+import cn.hamster3.service.bungee.util.ProxyServiceUtils;
 import cn.hamster3.service.bungee.util.ServiceLogUtils;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -40,36 +42,47 @@ public class ServiceMainListener implements Listener {
         if (!"HamsterService".equals(info.getTag())) {
             return;
         }
+        JsonElement content = info.getContent();
         switch (info.getAction()) {
-            case "resetInfos": {
-                JsonObject object = info.getContent().getAsJsonObject();
-                HashSet<ServicePlayerInfo> playerInfos = new HashSet<>();
-                for (JsonElement element : object.getAsJsonArray("playerInfos")) {
-                    playerInfos.add(new ServicePlayerInfo(element.getAsJsonObject()));
+            case "resetAllInfo": {
+                JsonObject object = content.getAsJsonObject();
+                HashSet<ServicePlayerInfo> playerInfo = new HashSet<>();
+                for (JsonElement element : object.getAsJsonArray("playerInfo")) {
+                    playerInfo.add(new ServicePlayerInfo(element.getAsJsonObject()));
                 }
-                serviceInfoAPI.resetAllPlayerInfo(playerInfos);
-                HashSet<ServiceSenderInfo> senderInfos = new HashSet<>();
-                for (JsonElement element : object.getAsJsonArray("senderInfos")) {
-                    senderInfos.add(new ServiceSenderInfo(element.getAsJsonObject()));
+                serviceInfoAPI.resetAllPlayerInfo(playerInfo);
+                HashSet<ServiceSenderInfo> senderInfo = new HashSet<>();
+                for (JsonElement element : object.getAsJsonArray("senderInfo")) {
+                    senderInfo.add(new ServiceSenderInfo(element.getAsJsonObject()));
                 }
-                serviceInfoAPI.resetAllServerInfo(senderInfos);
+                serviceInfoAPI.resetAllServerInfo(senderInfo);
                 break;
             }
             case "updatePlayerInfo": {
-                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContent().getAsJsonObject()));
+                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(content.getAsJsonObject()));
                 break;
             }
             case "removePlayerInfo": {
-                UUID uuid = UUID.fromString(info.getContent().getAsString());
+                UUID uuid = UUID.fromString(content.getAsString());
                 serviceInfoAPI.removePlayerInfo(uuid);
                 break;
             }
             case "updateServerInfo": {
-                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(info.getContent().getAsJsonObject()));
+                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(content.getAsJsonObject()));
                 break;
             }
             case "removeServerInfo": {
-                serviceInfoAPI.removeSenderInfo(info.getContent().getAsString());
+                serviceInfoAPI.removeSenderInfo(content.getAsString());
+                break;
+            }
+            case "sendPlayerMessage": {
+                JsonObject object = content.getAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player == null) {
+                    return;
+                }
+                player.sendMessage(ProxyServiceUtils.parseComponentFromJson(object.get("message")));
                 break;
             }
         }
@@ -91,4 +104,5 @@ public class ServiceMainListener implements Listener {
         ProxiedPlayer player = event.getPlayer();
         ServiceMessageAPI.sendMessage("HamsterService", "removePlayerInfo", player.getUniqueId().toString());
     }
+
 }
