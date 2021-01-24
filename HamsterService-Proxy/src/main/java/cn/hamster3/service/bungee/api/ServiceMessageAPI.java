@@ -16,7 +16,7 @@ import com.google.gson.JsonPrimitive;
  * <p>
  * 因此任何在onLoad()里调用该类的方法都可能是无效的
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public abstract class ServiceMessageAPI {
     private static ServiceConnection connection;
 

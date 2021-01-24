@@ -25,7 +25,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     private static final Logger logger = Logger.getLogger("ServiceCentre");
 
     private final HashSet<ServiceConnection> registeredHandlers;
-    private final HashSet<ServicePlayerInfo> playerInfos;
+    private final HashSet<ServicePlayerInfo> playerInfo;
 
     private final ServiceSenderInfo info;
     private final ServerConfig config;
@@ -38,7 +38,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                 "ServiceCentre",
                 "服务中心"
         );
-        playerInfos = new HashSet<>();
+        playerInfo = new HashSet<>();
         logger.info("服务中心初始化完成.");
     }
 
@@ -133,7 +133,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     }
 
     public ServicePlayerInfo getPlayerInfo(UUID uuid) {
-        for (ServicePlayerInfo playerInfo : playerInfos) {
+        for (ServicePlayerInfo playerInfo : playerInfo) {
             if (uuid.equals(playerInfo.getUuid())) {
                 return playerInfo;
             }
@@ -145,7 +145,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         return registeredHandlers;
     }
 
-    public HashSet<ServicePlayerInfo> getPlayerInfos() {
-        return playerInfos;
+    public HashSet<ServicePlayerInfo> getAllPlayerInfo() {
+        return playerInfo;
     }
 }

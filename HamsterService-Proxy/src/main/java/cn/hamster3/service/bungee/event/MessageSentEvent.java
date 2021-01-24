@@ -5,7 +5,7 @@ import cn.hamster3.service.common.entity.ServiceMessageInfo;
 /**
  * 消息发送出去之后产生的事件
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class MessageSentEvent extends MessageEvent {
     private final boolean success;
     private final Throwable cause;

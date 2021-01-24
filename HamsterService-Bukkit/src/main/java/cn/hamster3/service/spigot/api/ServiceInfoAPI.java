@@ -15,11 +15,11 @@ import java.util.UUID;
  * <p>
  * 也可以获取已连接至服务器的全部玩家信息（即使玩家在其他服务器）
  */
-@SuppressWarnings({"unused", "RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings("unused")
 public class ServiceInfoAPI {
     private static ServiceConnection connection;
-    private static HashSet<ServicePlayerInfo> playerInfos;
-    private static HashSet<ServiceSenderInfo> senderInfos;
+    private static HashSet<ServicePlayerInfo> playerInfo;
+    private static HashSet<ServiceSenderInfo> senderInfo;
 
     /**
      * 这个类不应该由你实例化
@@ -33,8 +33,8 @@ public class ServiceInfoAPI {
             throw new IllegalStateException("不允许重复初始化 ServiceMessageAPI !");
         }
         ServiceInfoAPI.connection = connection;
-        playerInfos = new HashSet<>();
-        senderInfos = new HashSet<>();
+        playerInfo = new HashSet<>();
+        senderInfo = new HashSet<>();
 
     }
 
@@ -47,7 +47,7 @@ public class ServiceInfoAPI {
     // 不加Nullable注解是因为觉得有些时候确信玩家在线
     // 这个时候获取又会提示null判断，就很烦
     public static ServicePlayerInfo getPlayerInfo(@NotNull String playerName) {
-        for (ServicePlayerInfo info : playerInfos) {
+        for (ServicePlayerInfo info : playerInfo) {
             if (info.getPlayerName().equalsIgnoreCase(playerName)) {
                 return info;
             }
@@ -62,7 +62,7 @@ public class ServiceInfoAPI {
      * @return 玩家信息
      */
     public static ServicePlayerInfo getPlayerInfo(@NotNull UUID uuid) {
-        for (ServicePlayerInfo info : playerInfos) {
+        for (ServicePlayerInfo info : playerInfo) {
             if (info.getUuid().equals(uuid)) {
                 return info;
             }
@@ -76,7 +76,7 @@ public class ServiceInfoAPI {
      * @return 玩家们的信息
      */
     public static HashSet<ServicePlayerInfo> getOnlinePlayers() {
-        return new HashSet<>(playerInfos);
+        return new HashSet<>(playerInfo);
     }
 
     /**
@@ -85,8 +85,8 @@ public class ServiceInfoAPI {
      * @param senderName 服务端id
      * @return 服务端信息
      */
-    public static ServiceSenderInfo getSenderInfo(String senderName) {
-        for (ServiceSenderInfo info : senderInfos) {
+    public static ServiceSenderInfo getAllSenderInfo(String senderName) {
+        for (ServiceSenderInfo info : senderInfo) {
             if (info.getName().equalsIgnoreCase(senderName)) {
                 return info;
             }
@@ -99,8 +99,8 @@ public class ServiceInfoAPI {
      *
      * @return 服务器信息
      */
-    public static HashSet<ServiceSenderInfo> getSenderInfos() {
-        return senderInfos;
+    public static HashSet<ServiceSenderInfo> getAllSenderInfo() {
+        return senderInfo;
     }
 
     /**
@@ -126,7 +126,7 @@ public class ServiceInfoAPI {
      *
      * @return 当前服务器的发送者信息
      */
-    public static ServiceSenderInfo getSelfInfo() {
+    public static ServiceSenderInfo getLocalSenderInfo() {
         return connection.getInfo();
     }
 
@@ -136,8 +136,8 @@ public class ServiceInfoAPI {
      * @param playerInfo 玩家信息
      */
     public void loadPlayerInfo(ServicePlayerInfo playerInfo) {
-        playerInfos.remove(playerInfo);
-        playerInfos.add(playerInfo);
+        ServiceInfoAPI.playerInfo.remove(playerInfo);
+        ServiceInfoAPI.playerInfo.add(playerInfo);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ServiceInfoAPI {
      */
     public void removePlayerInfo(UUID uuid) {
         ServicePlayerInfo info = getPlayerInfo(uuid);
-        playerInfos.remove(info);
+        playerInfo.remove(info);
     }
 
     /**
@@ -156,8 +156,8 @@ public class ServiceInfoAPI {
      * @param senderInfo 服务器信息
      */
     public void loadServerInfo(ServiceSenderInfo senderInfo) {
-        senderInfos.remove(senderInfo);
-        senderInfos.add(senderInfo);
+        ServiceInfoAPI.senderInfo.remove(senderInfo);
+        ServiceInfoAPI.senderInfo.add(senderInfo);
     }
 
     /**
@@ -166,25 +166,25 @@ public class ServiceInfoAPI {
      * @param name 服务器名称
      */
     public void removeSenderInfo(String name) {
-        ServiceSenderInfo info = getSenderInfo(name);
-        senderInfos.remove(info);
+        ServiceSenderInfo info = getAllSenderInfo(name);
+        senderInfo.remove(info);
     }
 
     /**
      * 重设所有玩家信息
      *
-     * @param playerInfos 玩家们的信息
+     * @param playerInfo 玩家们的信息
      */
-    public void resetAllPlayerInfo(HashSet<ServicePlayerInfo> playerInfos) {
-        ServiceInfoAPI.playerInfos = playerInfos;
+    public void resetAllPlayerInfo(HashSet<ServicePlayerInfo> playerInfo) {
+        ServiceInfoAPI.playerInfo = playerInfo;
     }
 
     /**
      * 重设所有服务器信息
      *
-     * @param senderInfos 所有服务器的信息
+     * @param senderInfo 所有服务器的信息
      */
-    public void resetAllServerInfo(HashSet<ServiceSenderInfo> senderInfos) {
-        ServiceInfoAPI.senderInfos = senderInfos;
+    public void resetAllServerInfo(HashSet<ServiceSenderInfo> senderInfo) {
+        ServiceInfoAPI.senderInfo = senderInfo;
     }
 }

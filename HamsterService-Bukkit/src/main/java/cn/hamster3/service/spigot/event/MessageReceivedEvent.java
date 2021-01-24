@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 从服务中心收到消息时产生的事件
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class MessageReceivedEvent extends MessageEvent {
     private static final HandlerList handlers = new HandlerList();
 

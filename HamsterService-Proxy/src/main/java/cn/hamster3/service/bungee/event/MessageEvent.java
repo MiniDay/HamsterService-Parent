@@ -6,7 +6,7 @@ import net.md_5.bungee.api.plugin.Event;
 /**
  * 服务消息事件的基类
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class MessageEvent extends Event {
     private final ServiceMessageInfo messageInfo;
 

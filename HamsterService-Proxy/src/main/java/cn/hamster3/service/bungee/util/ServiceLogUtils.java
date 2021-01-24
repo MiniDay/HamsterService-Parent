@@ -2,7 +2,7 @@ package cn.hamster3.service.bungee.util;
 
 import java.util.logging.Logger;
 
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public abstract class ServiceLogUtils {
     private static Logger logger;
 

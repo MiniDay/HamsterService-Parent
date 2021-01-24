@@ -3,7 +3,7 @@ package cn.hamster3.service.common.entity;
 /**
  * 消息发送者类型
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public enum ServiceSenderType {
     /**
      * Bukkit服务器

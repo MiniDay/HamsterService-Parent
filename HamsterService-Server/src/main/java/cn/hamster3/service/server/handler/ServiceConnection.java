@@ -96,7 +96,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
             }
             case "serverEnabled": {
                 JsonArray playerInfosJson = new JsonArray();
-                for (ServicePlayerInfo playerInfo : centre.getPlayerInfos()) {
+                for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
                     playerInfosJson.add(playerInfo.saveToJson());
                 }
 
@@ -121,15 +121,15 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
             }
             case "updatePlayerInfo": {
                 ServicePlayerInfo playerInfo = new ServicePlayerInfo(messageInfo.getContent().getAsJsonObject());
-                centre.getPlayerInfos().remove(playerInfo);
-                centre.getPlayerInfos().add(playerInfo);
+                centre.getAllPlayerInfo().remove(playerInfo);
+                centre.getAllPlayerInfo().add(playerInfo);
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
             case "removePlayerInfo": {
                 UUID uuid = UUID.fromString(messageInfo.getContent().getAsString());
                 ServicePlayerInfo info = centre.getPlayerInfo(uuid);
-                centre.getPlayerInfos().remove(info);
+                centre.getAllPlayerInfo().remove(info);
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }

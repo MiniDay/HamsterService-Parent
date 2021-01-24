@@ -7,7 +7,7 @@ import net.md_5.bungee.api.plugin.Event;
  * 服务连接事件
  */
 
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServiceConnectEvent extends Event {
     private final boolean success;
     private final Throwable cause;

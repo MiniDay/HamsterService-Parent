@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * 玩家信息
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServicePlayerInfo {
     /**
      * 玩家的uuid

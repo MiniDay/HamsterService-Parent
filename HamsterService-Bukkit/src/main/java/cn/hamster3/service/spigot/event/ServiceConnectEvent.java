@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * 服务连接事件
  */
 
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServiceConnectEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final boolean success;

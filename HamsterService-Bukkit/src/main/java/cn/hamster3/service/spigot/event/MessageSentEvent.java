@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 消息发送出去之后产生的事件
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class MessageSentEvent extends MessageEvent {
     private static final HandlerList handlers = new HandlerList();
 

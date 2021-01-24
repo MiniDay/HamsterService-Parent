@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * 消息内容
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServiceMessageInfo {
     /**
      * 消息发送者

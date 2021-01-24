@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 消息发送者信息
  */
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServiceSenderInfo {
     private final ServiceSenderType type;
     private final String name;

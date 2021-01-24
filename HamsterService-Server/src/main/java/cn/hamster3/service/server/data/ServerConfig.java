@@ -2,7 +2,7 @@ package cn.hamster3.service.server.data;
 
 import java.util.List;
 
-@SuppressWarnings({"unused", "RedundantSuppression"})
+@SuppressWarnings("unused")
 public class ServerConfig {
     private String serviceAddress;
     private int servicePort;
