@@ -108,7 +108,7 @@ public class ServiceInfoAPI {
      *
      * @return 服务器id
      */
-    public static String getServerName() {
+    public static String getLocalServerName() {
         return connection.getInfo().getName();
     }
 
@@ -117,7 +117,7 @@ public class ServiceInfoAPI {
      *
      * @return 服务器别名
      */
-    public static String getServerNickName() {
+    public static String getLocalServerNickName() {
         return connection.getInfo().getNickName();
     }
 
