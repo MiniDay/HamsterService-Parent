@@ -12,17 +12,18 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * 服务中心
  */
 public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
-    private static final Logger logger = Logger.getLogger("ServiceCentre");
+    private static final Logger logger = LoggerFactory.getLogger("ServiceCentre");
 
     private final HashSet<ServiceConnection> registeredHandlers;
     private final HashSet<ServicePlayerInfo> playerInfo;
@@ -65,7 +66,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            logger.warning(hostAddress + " 不在白名单列表中, 已断开连接!");
+            logger.warn(hostAddress + " 不在白名单列表中, 已断开连接!");
             return;
         }
         channel.pipeline().addLast(new ServiceConnection(this, channel));

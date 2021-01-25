@@ -2,5 +2,5 @@ name: HamsterService-BungeeCord
 version: ${project.version}
 main: cn.hamster3.service.bungee.HamsterServicePlugin
 author: Hamster3
-website: ${project.url}
-description: ${project.description}
+website: ${project.parent.url}
+description: ${project.parent.description}

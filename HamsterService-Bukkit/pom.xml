@@ -20,7 +20,7 @@
         <dependency>
             <groupId>cn.hamster3</groupId>
             <artifactId>HamsterService-Common</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
