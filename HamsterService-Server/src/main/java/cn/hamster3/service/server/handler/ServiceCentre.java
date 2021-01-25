@@ -74,7 +74,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void registered(ServiceConnection handler) {
         registeredHandlers.add(handler);
-        logger.info("服务器 {} 已注册!", handler.getInfo().getName());
+        logger.info("服务器 {} 已注册.", handler.getInfo().getName());
 
         broadcastServiceMessage(
                 new ServiceMessageInfo(
@@ -88,7 +88,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void closed(ServiceConnection handler) {
         registeredHandlers.remove(handler);
-        logger.info("服务器 {} 已断开链接!", handler.getInfo().getName());
+        logger.info("与服务器 {} 的链接已断开.", handler.getInfo().getName());
 
         ServiceSenderInfo info = handler.getInfo();
         if (info == null) {

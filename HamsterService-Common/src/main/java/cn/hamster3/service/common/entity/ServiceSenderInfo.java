@@ -12,6 +12,9 @@ public class ServiceSenderInfo {
     private final String name;
     private final String nickName;
 
+    /**
+     * 缓存用的 jsonInfo
+     */
     private JsonObject jsonInfo;
 
     public ServiceSenderInfo(@NotNull ServiceSenderType type, @NotNull String name, @NotNull String nickName) {

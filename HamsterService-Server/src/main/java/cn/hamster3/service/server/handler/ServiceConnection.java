@@ -73,13 +73,13 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext context) {
         context.close();
-        logger.warn("服务器 {} 断开了连接!", info.getName());
+        logger.warn("服务器 {} 断开了与我们的连接.", info.getName());
         centre.closed(this);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.warn("与服务器 {} 的通信中出现了一个错误: ", info.getName(), cause);
+        logger.warn("与服务器 {} 通信时出现了一个错误: ", info.getName(), cause);
     }
 
     private void executeServiceMessage(ServiceMessageInfo messageInfo) {
