@@ -45,7 +45,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     @Override
     protected void initChannel(NioSocketChannel channel) {
-        logger.info("远程地址 " + channel.remoteAddress().toString() + " 请求建立连接...");
+        logger.info("远程地址 {} 请求建立连接...", channel.remoteAddress().toString());
         channel.pipeline()
                 .addLast(new LengthFieldPrepender(8))
                 .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 8, 0, 8))
@@ -66,7 +66,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            logger.warn(hostAddress + " 不在白名单列表中, 已断开连接!");
+            logger.warn("{} 不在白名单列表中, 已断开连接!", hostAddress);
             return;
         }
         channel.pipeline().addLast(new ServiceConnection(this, channel));
@@ -74,7 +74,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void registered(ServiceConnection handler) {
         registeredHandlers.add(handler);
-        logger.info("服务器 " + handler.getInfo().getName() + " 已注册!");
+        logger.info("服务器 {} 已注册!", handler.getInfo().getName());
 
         broadcastServiceMessage(
                 new ServiceMessageInfo(
@@ -88,7 +88,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void closed(ServiceConnection handler) {
         registeredHandlers.remove(handler);
-        logger.info("服务器 " + handler.getInfo().getName() + " 已断开链接!");
+        logger.info("服务器 {} 已断开链接!", handler.getInfo().getName());
 
         ServiceSenderInfo info = handler.getInfo();
         if (info == null) {

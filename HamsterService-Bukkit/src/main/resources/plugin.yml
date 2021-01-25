@@ -1,4 +1,4 @@
-name: HamsterService-Spigot
+name: HamsterService-Bukkit
 version: ${project.version}
 main: cn.hamster3.service.spigot.HamsterServicePlugin
 load: STARTUP

@@ -7,14 +7,15 @@ import com.google.gson.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 
 public class ServiceConnection extends SimpleChannelInboundHandler<String> {
-    private static final Logger logger = Logger.getLogger("ServiceConnection");
+    private static final Logger logger = LoggerFactory.getLogger("ServiceConnection");
 
     private final NioSocketChannel channel;
     private final ServiceCentre centre;
@@ -40,7 +41,8 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         try {
             ServiceMessageInfo messageInfo = new ServiceMessageInfo(JsonParser.parseString(msg).getAsJsonObject());
             if (info != null) {
-                logger.info("从服务器 " + info.getName() + " 上收到一条消息: \n" + gson.toJson(messageInfo));
+                logger.info("从服务器 {} 上收到一条消息:", info.getName());
+                logger.info(gson.toJson(messageInfo));
             }
             if ("HamsterService".equals(messageInfo.getTag())) {
                 executeServiceMessage(messageInfo);
@@ -63,7 +65,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
             }
             centre.broadcastMessage(messageInfo);
         } catch (Exception e) {
-            logger.warning("处理消息 " + msg + " 时出现错误: ");
+            logger.warn("处理消息 {} 时出现错误: ", msg);
             e.printStackTrace();
         }
     }
@@ -71,14 +73,13 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext context) {
         context.close();
-        logger.warning(String.format("服务器 %s 断开了连接!", info.getName()));
+        logger.warn("服务器 {} 断开了连接!", info.getName());
         centre.closed(this);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.warning(String.format("与服务器 %s 的通信中出现了一个错误: ", info.getName()));
-        cause.printStackTrace();
+        logger.warn("与服务器 {} 的通信中出现了一个错误: ", info.getName(), cause);
     }
 
     private void executeServiceMessage(ServiceMessageInfo messageInfo) {

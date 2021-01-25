@@ -165,5 +165,5 @@ content可以存储任何Json支持的数据：int、long、字符串、JsonObje
 | [snakeyaml](https://bitbucket.org/asomov/snakeyaml)          | [Apache-2.0](https://bitbucket.org/asomov/snakeyaml/src/master/LICENSE.txt)         | 提供了 YAML 解析支持              |
 | [Slf4j](http://www.slf4j.org/)                               | [MIT](http://www.slf4j.org/license.html)                                            | 提供了日志 API 支持               |
 | [Log4j2](http://logging.apache.org/log4j/2.x/)               | [Apache-2.0](http://logging.apache.org/log4j/2.x/license.html)                      | 提供了日志实现                    |
-| [JLine3](https://github.com/jline/jline3)                    | [BSD-3](https://github.com/jline/jline3/blob/master/LICENSE.txt)                    | 提供了控制台命令实现              |
 | [annotations](https://github.com/JetBrains/java-annotations) | [Apache-2.0](https://github.com/JetBrains/java-annotations/blob/master/LICENSE.txt) | 提供了注解帮助，让代码更简洁易懂  |
+

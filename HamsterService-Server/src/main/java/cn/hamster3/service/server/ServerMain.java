@@ -31,10 +31,10 @@ public class ServerMain {
         InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
         ServerConfig config = new Yaml().loadAs(reader, ServerConfig.class);
         reader.close();
-        logger.info("服务器绑定地址: " + config.getServiceAddress());
-        logger.info("服务器绑定端口: " + config.getServicePort());
-        logger.info("服务器线程池数: " + config.getNioThread());
-        logger.info("白名单IP列表: " + config.getAcceptList());
+        logger.info("服务器绑定地址: {}", config.getServiceAddress());
+        logger.info("服务器绑定端口: {}", config.getServicePort());
+        logger.info("服务器线程池数: {}", config.getNioThread());
+        logger.info("白名单IP列表: {}", config.getAcceptList());
 
         ServerBootstrap bootstrap = new ServerBootstrap();
         loopGroup = new NioEventLoopGroup(config.getNioThread());
@@ -46,7 +46,7 @@ public class ServerMain {
                 .childHandler(new ServiceCentre(config));
         bootstrap.bind(config.getServiceAddress(), config.getServicePort()).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                logger.info("服务器已启动.");
+                logger.info("服务器已启动. 输入 stop 关闭服务器.");
             } else {
                 logger.warn("服务器启动失败!");
                 future.cause().printStackTrace();
