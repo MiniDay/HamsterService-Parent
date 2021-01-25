@@ -152,4 +152,18 @@ public class Test {
 content可以存储任何Json支持的数据：int、long、字符串、JsonObject、JsonArray等等  
 由于插件为了方便快捷（以及为了照顾强迫症患者）去除了很多繁琐的代码判断，所有的类型判断由人为检查  
 因此请注意收发信息时的content格式，若使用不当则可能会引发事件报错  
-（↑比如你明明发消息的时候写的是个字符串，读取的时候却`getAsJsonObject()`）  
+（↑比如你明明发消息的时候写的是个字符串，读取的时候却`getAsJsonObject()`）
+
+# 本项目使用的其他开源产品
+
+| 产品名称                                                     | 描述                              |
+| :----------------------------------------------------------- | :-------------------------------- |
+| [Spigot](https://www.spigotmc.org/)                          | 提供了 Bukkit 插件的 API 支持     |
+| [BungeeCord](https://www.spigotmc.org/)                      | 提供了 BungeeCord 插件的 API 支持 |
+| [Netty](https://github.com/netty/netty)                      | 提供了网络通信支持                |
+| [Gson](https://github.com/google/gson)                       | 提供了 Json 解析支持              |
+| [snakeyaml](https://bitbucket.org/asomov/snakeyaml)          | 提供了 YAML 解析支持              |
+| [Slf4j](http://www.slf4j.org/)                               | 提供了日志 API 支持               |
+| [Log4j2](http://logging.apache.org/log4j/2.x/)               | 提供了日志实现                    |
+| [JLine3](https://github.com/jline/jline3)                    | 提供了控制台命令实现              |
+| [annotations](https://github.com/JetBrains/java-annotations) | 提供了注解帮助，让代码更简洁易懂      |
