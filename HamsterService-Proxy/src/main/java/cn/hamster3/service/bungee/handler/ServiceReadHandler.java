@@ -36,7 +36,7 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelInactive(@NotNull ChannelHandlerContext ctx) {
-        ServiceLogUtils.warning("服务中心断开了连接...");
+        ServiceLogUtils.warning("与服务中心断开了连接.");
         connection.reconnect();
     }
 

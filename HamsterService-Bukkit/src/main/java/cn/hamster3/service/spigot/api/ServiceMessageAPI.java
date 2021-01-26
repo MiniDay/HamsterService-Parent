@@ -138,7 +138,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("message", message);
-        sendMessage("HamsterService", "sendPlayerMessage", message);
+        sendMessage("HamsterService", "sendPlayerMessage", object);
     }
 
 }

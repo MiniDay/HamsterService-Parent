@@ -134,6 +134,10 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
+            default: {
+                centre.broadcastServiceMessage(messageInfo);
+                break;
+            }
         }
     }
 
