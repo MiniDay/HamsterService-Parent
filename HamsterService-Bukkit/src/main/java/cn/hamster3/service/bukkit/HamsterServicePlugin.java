@@ -3,6 +3,7 @@ package cn.hamster3.service.bukkit;
 import cn.hamster3.service.bukkit.api.ServiceInfoAPI;
 import cn.hamster3.service.bukkit.api.ServiceMessageAPI;
 import cn.hamster3.service.bukkit.handler.ServiceConnection;
+import cn.hamster3.service.bukkit.hook.PlaceholderHook;
 import cn.hamster3.service.bukkit.listener.ServiceLogReceiveListener;
 import cn.hamster3.service.bukkit.listener.ServiceLogSendListener;
 import cn.hamster3.service.bukkit.listener.ServiceMainListener;
@@ -42,6 +43,12 @@ public final class HamsterServicePlugin extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new ServiceLogReceiveListener(), this);
         }
         Bukkit.getPluginManager().registerEvents(new ServiceMainListener(serviceInfoAPI), this);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderHook().register();
+            ServiceLogUtils.info("已注册 PlaceholderAPI 占位符.");
+        } else {
+            ServiceLogUtils.warning("未找到 PlaceholderAPI 插件, 取消注册占位符.");
+        }
     }
 
     @Override

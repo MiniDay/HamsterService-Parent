@@ -12,12 +12,23 @@ HamsterService 的 Bukkit 组件，该组件用于安装在 Bukkit 服务端
 
 HamsterService 的 Proxy 组件，该组件用于安装在 BungeeCord 服务端
 
+### PlaceholderAPI 变量列表
+
+|变量名称|描述|示例|
+|:---|:---|:---|
+|%HamsterService_server_name%|当前所在的 bukkit 服务器名称|survival|
+|%HamsterService_server_nick_name%|当前所在的 bukkit 服务器别名|生存服|
+|%HamsterService_bc_server_name%|1111|2222|
+|%HamsterService_%|1111|2222|
+|%HamsterService_%|1111|2222|
+|%HamsterService_%|1111|2222|
+
 ## HamsterService-Server
 
 HamsterService 的 转发中心 组件，该组件应该单独启动  
 为其他安装了该插件的服务端提供跨服通信的支持
 
-# 开发者
+# 快速上手
 
 ## 1.依赖导入
 
