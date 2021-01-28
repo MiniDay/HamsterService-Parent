@@ -151,6 +151,7 @@ public abstract class ServiceMessageAPI {
      * 给服务器的在线玩家广播一条消息
      *
      * @param message 消息
+     * @since 2.1.0
      */
     public static void broadcastMessage(String message) {
         JsonObject object = new JsonObject();
@@ -162,6 +163,7 @@ public abstract class ServiceMessageAPI {
      * 给服务器的在线玩家广播一条消息
      *
      * @param message 消息
+     * @since 2.1.0
      */
     public static void broadcastMessage(JsonElement message) {
         sendMessage("HamsterService", "broadcastMessage", message);
@@ -174,6 +176,7 @@ public abstract class ServiceMessageAPI {
      *
      * @param sendPlayer 被传送的玩家
      * @param toPlayer   传送的目标玩家
+     * @since 2.1.0
      */
     public static void sendPlayerToPlayer(UUID sendPlayer, UUID toPlayer) {
         Player player = Bukkit.getPlayer(toPlayer);
@@ -204,6 +207,7 @@ public abstract class ServiceMessageAPI {
      *
      * @param uuid     玩家的uuid
      * @param location 坐标
+     * @since 2.1.0
      */
     public static void sendPlayerToLocation(UUID uuid, ServiceLocation location) {
         Player player = Bukkit.getPlayer(uuid);
