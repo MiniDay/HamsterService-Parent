@@ -1,4 +1,4 @@
-package cn.hamster3.service.spigot.util;
+package cn.hamster3.service.common.util;
 
 import java.util.logging.Logger;
 

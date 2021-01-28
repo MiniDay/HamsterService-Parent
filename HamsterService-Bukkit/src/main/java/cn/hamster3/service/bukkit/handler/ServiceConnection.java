@@ -1,12 +1,12 @@
-package cn.hamster3.service.spigot.handler;
+package cn.hamster3.service.bukkit.handler;
 
+import cn.hamster3.service.bukkit.HamsterServicePlugin;
+import cn.hamster3.service.bukkit.event.MessageSentEvent;
+import cn.hamster3.service.bukkit.event.ServiceConnectEvent;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;
-import cn.hamster3.service.spigot.HamsterServicePlugin;
-import cn.hamster3.service.spigot.event.MessageSentEvent;
-import cn.hamster3.service.spigot.event.ServiceConnectEvent;
-import cn.hamster3.service.spigot.util.ServiceLogUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

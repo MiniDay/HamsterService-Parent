@@ -1,4 +1,4 @@
-package cn.hamster3.service.spigot.event;
+package cn.hamster3.service.bukkit.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -15,14 +15,14 @@ public class ServiceConnectEvent extends Event {
     private final Throwable cause;
 
     public ServiceConnectEvent() {
-        super(false);
+        super(true);
         success = true;
         cause = null;
     }
 
     public ServiceConnectEvent(Throwable cause) {
-        super(false);
-        success = true;
+        super(true);
+        success = false;
         this.cause = cause;
     }
 

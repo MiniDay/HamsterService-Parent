@@ -1,4 +1,4 @@
-package cn.hamster3.service.spigot.handler;
+package cn.hamster3.service.bukkit.handler;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;

@@ -5,10 +5,11 @@ import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.bungee.event.ServiceConnectEvent;
 import cn.hamster3.service.bungee.util.ProxyServiceUtils;
-import cn.hamster3.service.bungee.util.ServiceLogUtils;
+import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.ProxyServer;
@@ -84,6 +85,31 @@ public class ServiceMainListener implements Listener {
                     return;
                 }
                 player.sendMessage(ProxyServiceUtils.parseComponentFromJson(object.get("message")));
+                break;
+            }
+            case "broadcastMessage": {
+                JsonObject object = content.getAsJsonObject();
+                for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                    player.sendMessage(ProxyServiceUtils.parseComponentFromJson(object));
+                }
+                break;
+            }
+            case "sendPlayerToLocation": {
+                JsonObject object = info.getContent().getAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player == null) {
+                    return;
+                }
+                ServiceLocation location = new ServiceLocation(object.getAsJsonObject("location"));
+                if (location.getServerName().equals(player.getServer().getInfo().getName())) {
+                    return;
+                }
+                ServiceSenderInfo senderInfo = ServiceInfoAPI.getSenderInfo(location.getServerName());
+                if (senderInfo == null) {
+                    return;
+                }
+                player.connect(ProxyServer.getInstance().getServerInfo(location.getServerName()));
                 break;
             }
         }

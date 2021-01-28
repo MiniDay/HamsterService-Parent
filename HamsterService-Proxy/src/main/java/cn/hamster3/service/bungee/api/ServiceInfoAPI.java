@@ -85,7 +85,7 @@ public class ServiceInfoAPI {
      * @param senderName 服务端id
      * @return 服务端信息
      */
-    public static ServiceSenderInfo getAllSenderInfo(String senderName) {
+    public static ServiceSenderInfo getSenderInfo(String senderName) {
         for (ServiceSenderInfo info : senderInfo) {
             if (info.getName().equalsIgnoreCase(senderName)) {
                 return info;
@@ -166,7 +166,7 @@ public class ServiceInfoAPI {
      * @param name 服务器名称
      */
     public void removeSenderInfo(String name) {
-        ServiceSenderInfo info = getAllSenderInfo(name);
+        ServiceSenderInfo info = getSenderInfo(name);
         senderInfo.remove(info);
     }
 

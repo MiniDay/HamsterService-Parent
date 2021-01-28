@@ -1,22 +1,28 @@
-package cn.hamster3.service.spigot;
+package cn.hamster3.service.bukkit;
 
-import cn.hamster3.service.spigot.api.ServiceInfoAPI;
-import cn.hamster3.service.spigot.api.ServiceMessageAPI;
-import cn.hamster3.service.spigot.handler.ServiceConnection;
-import cn.hamster3.service.spigot.listener.ServiceLogReceiveListener;
-import cn.hamster3.service.spigot.listener.ServiceLogSendListener;
-import cn.hamster3.service.spigot.listener.ServiceMainListener;
-import cn.hamster3.service.spigot.util.ServiceLogUtils;
+import cn.hamster3.service.bukkit.api.ServiceInfoAPI;
+import cn.hamster3.service.bukkit.api.ServiceMessageAPI;
+import cn.hamster3.service.bukkit.handler.ServiceConnection;
+import cn.hamster3.service.bukkit.listener.ServiceLogReceiveListener;
+import cn.hamster3.service.bukkit.listener.ServiceLogSendListener;
+import cn.hamster3.service.bukkit.listener.ServiceMainListener;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HamsterServicePlugin extends JavaPlugin {
+    private static HamsterServicePlugin instance;
     private ServiceConnection connection;
     private ServiceInfoAPI serviceInfoAPI;
 
+    public static HamsterServicePlugin getInstance() {
+        return instance;
+    }
+
     @Override
     public void onLoad() {
+        instance = this;
         ServiceLogUtils.setLogger(getLogger());
         saveDefaultConfig();
         reloadConfig();

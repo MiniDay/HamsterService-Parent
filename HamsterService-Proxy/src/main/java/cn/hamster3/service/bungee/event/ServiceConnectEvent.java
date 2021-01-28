@@ -18,7 +18,7 @@ public class ServiceConnectEvent extends Event {
     }
 
     public ServiceConnectEvent(Throwable cause) {
-        success = true;
+        success = false;
         this.cause = cause;
     }
 

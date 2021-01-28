@@ -1,10 +1,16 @@
-package cn.hamster3.service.spigot.api;
+package cn.hamster3.service.bukkit.api;
 
+import cn.hamster3.service.bukkit.HamsterServicePlugin;
+import cn.hamster3.service.bukkit.data.BukkitLocation;
+import cn.hamster3.service.bukkit.handler.ServiceConnection;
+import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
-import cn.hamster3.service.spigot.handler.ServiceConnection;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.UUID;
 
@@ -139,6 +145,91 @@ public abstract class ServiceMessageAPI {
         object.addProperty("uuid", uuid.toString());
         object.add("message", message);
         sendMessage("HamsterService", "sendPlayerMessage", object);
+    }
+
+    /**
+     * 给服务器的在线玩家广播一条消息
+     *
+     * @param message 消息
+     */
+    public static void broadcastMessage(String message) {
+        JsonObject object = new JsonObject();
+        object.addProperty("text", message);
+        broadcastMessage(object);
+    }
+
+    /**
+     * 给服务器的在线玩家广播一条消息
+     *
+     * @param message 消息
+     */
+    public static void broadcastMessage(JsonElement message) {
+        sendMessage("HamsterService", "broadcastMessage", message);
+    }
+
+    /**
+     * 把玩家传送到另一个玩家身边
+     * <p>
+     * 支持跨服传送
+     *
+     * @param sendPlayer 被传送的玩家
+     * @param toPlayer   传送的目标玩家
+     */
+    public static void sendPlayerToPlayer(UUID sendPlayer, UUID toPlayer) {
+        Player player = Bukkit.getPlayer(toPlayer);
+        if (player != null) {
+            sendPlayerToLocation(sendPlayer, new BukkitLocation(player));
+            return;
+        }
+
+        // 如果被传送玩家不在线
+        if (ServiceInfoAPI.getPlayerInfo(sendPlayer) == null) {
+            return;
+        }
+        // 如果目标玩家不在线
+        if (ServiceInfoAPI.getPlayerInfo(toPlayer) == null) {
+            return;
+        }
+
+        JsonObject object = new JsonObject();
+        object.addProperty("sendPlayer", sendPlayer.toString());
+        object.addProperty("toPlayer", toPlayer.toString());
+        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToPlayer", object);
+    }
+
+    /**
+     * 把玩家传送到一个位置
+     * <p>
+     * 支持跨服传送
+     *
+     * @param uuid     玩家的uuid
+     * @param location 坐标
+     */
+    public static void sendPlayerToLocation(UUID uuid, ServiceLocation location) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null && ServiceInfoAPI.getLocalServerName().equals(location.getServerName())) {
+            Bukkit.getScheduler().runTaskLater(
+                    HamsterServicePlugin.getInstance(),
+                    () -> player.teleport(
+                            new BukkitLocation(location).toBukkitLocation(),
+                            PlayerTeleportEvent.TeleportCause.UNKNOWN
+                    ),
+                    1
+            );
+            return;
+        }
+        // 如果玩家不在线
+        if (ServiceInfoAPI.getPlayerInfo(uuid) == null) {
+            return;
+        }
+        // 如果目标服务器不在线
+        if (ServiceInfoAPI.getSenderInfo(location.getServerName()) == null) {
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty("uuid", uuid.toString());
+        object.add("location", location.saveToJson());
+        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToLocation", object);
     }
 
 }

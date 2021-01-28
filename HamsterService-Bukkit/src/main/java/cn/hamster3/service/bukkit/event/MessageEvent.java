@@ -1,4 +1,4 @@
-package cn.hamster3.service.spigot.event;
+package cn.hamster3.service.bukkit.event;
 
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import org.bukkit.event.Event;

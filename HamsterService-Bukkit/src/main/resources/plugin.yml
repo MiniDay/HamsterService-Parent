@@ -1,6 +1,6 @@
 name: HamsterService-Bukkit
 version: ${project.version}
-main: cn.hamster3.service.spigot.HamsterServicePlugin
+main: cn.hamster3.service.bukkit.HamsterServicePlugin
 load: STARTUP
 author: Hamster3
 website: ${project.parent.url}

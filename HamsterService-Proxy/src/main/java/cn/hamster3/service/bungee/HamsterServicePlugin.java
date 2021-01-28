@@ -6,7 +6,7 @@ import cn.hamster3.service.bungee.handler.ServiceConnection;
 import cn.hamster3.service.bungee.listener.ServiceLogReceiveListener;
 import cn.hamster3.service.bungee.listener.ServiceLogSendListener;
 import cn.hamster3.service.bungee.listener.ServiceMainListener;
-import cn.hamster3.service.bungee.util.ServiceLogUtils;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;

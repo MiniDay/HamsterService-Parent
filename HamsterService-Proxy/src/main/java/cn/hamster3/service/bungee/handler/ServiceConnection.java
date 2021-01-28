@@ -3,7 +3,7 @@ package cn.hamster3.service.bungee.handler;
 import cn.hamster3.service.bungee.HamsterServicePlugin;
 import cn.hamster3.service.bungee.event.MessageSentEvent;
 import cn.hamster3.service.bungee.event.ServiceConnectEvent;
-import cn.hamster3.service.bungee.util.ServiceLogUtils;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;

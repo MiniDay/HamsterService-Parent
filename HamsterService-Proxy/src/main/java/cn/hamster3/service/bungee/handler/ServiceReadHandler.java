@@ -1,7 +1,7 @@
 package cn.hamster3.service.bungee.handler;
 
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
-import cn.hamster3.service.bungee.util.ServiceLogUtils;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import com.google.gson.JsonParser;
 import io.netty.channel.ChannelHandlerContext;
