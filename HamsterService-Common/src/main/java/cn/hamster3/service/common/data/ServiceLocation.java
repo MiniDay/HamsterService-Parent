@@ -1,8 +1,6 @@
 package cn.hamster3.service.common.data;
 
 import com.google.gson.JsonObject;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
@@ -59,17 +57,6 @@ public class ServiceLocation {
         object.addProperty("yaw", yaw);
         object.addProperty("pitch", pitch);
         return object;
-    }
-
-    public Location toBukkitLocation() {
-        return new Location(
-                Bukkit.getWorld(getWorldName()),
-                getX(),
-                getY(),
-                getZ(),
-                getYaw(),
-                getPitch()
-        );
     }
 
     @NotNull
