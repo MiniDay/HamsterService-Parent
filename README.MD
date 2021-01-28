@@ -148,7 +148,12 @@ public class Test {
 ## 5.其他内容
 
 插件的主要API都集中在 ServiceInfoAPI 和 ServiceMessageAPI 两个类，具体内容请查阅开发文档  
-在使用 ServiceMessageAPI.sendMessage() 时，tag一般使用插件名称，action一般用于动作判断（即收到该消息后该如何处理），content一般用于附加信息（具体看上面的例子就知道了）  
+在使用 ServiceMessageAPI.sendMessage() 时:
+
+- tag一般使用插件名称
+- action一般用于动作判断（即收到该消息后该如何处理）
+- content一般用于附加信息（具体看上面的例子就知道了）
+
 content可以存储任何Json支持的数据：int、long、字符串、JsonObject、JsonArray等等  
 由于插件为了方便快捷（以及为了照顾强迫症患者）去除了很多繁琐的代码判断，所有的类型判断由人为检查  
 因此请注意收发信息时的content格式，若使用不当则可能会引发事件报错  
@@ -156,8 +161,8 @@ content可以存储任何Json支持的数据：int、long、字符串、JsonObje
 
 # TODO LIST
 
-- 实现跨服广播接口 （√） 2.1.0
-- 实现跨服传送接口 （√） 2.1.0
+- 实现跨服广播接口 （2.1.0 √）
+- 实现跨服传送接口 （2.1.0 √）
 
 # 本项目使用的其他开源项目
 
