@@ -1,4 +1,4 @@
-package cn.hamster3.service.bungee.util;
+package cn.hamster3.service.common.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,9 +12,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 
-@SuppressWarnings("deprecation")
-public class ProxyServiceUtils {
-    public ProxyServiceUtils() {
+public class ComponentUtils {
+    public ComponentUtils() {
     }
 
     public static BaseComponent[] parseComponentFromJson(JsonElement json) {
@@ -37,7 +36,7 @@ public class ProxyServiceUtils {
             JsonObject object = json.getAsJsonObject();
             ComponentBuilder builder = new ComponentBuilder(object.get("text").getAsString());
             if (object.has("color")) {
-                builder.color(getColorByName(object.get("color").getAsString()));
+                builder.color(ChatColor.of(object.get("color").getAsString()));
             }
             if (object.has("bold")) {
                 builder.bold(object.get("bold").getAsBoolean());
@@ -71,15 +70,6 @@ public class ProxyServiceUtils {
         throw new IllegalArgumentException("非法json字符串: " + json);
     }
 
-    private static ChatColor getColorByName(String name) {
-        for (ChatColor value : ChatColor.values()) {
-            if (value.getName().equalsIgnoreCase(name)) {
-                return value;
-            }
-        }
-        return null;
-    }
-
 
     private static ClickEvent parseClickEvent(JsonObject object) {
         return new ClickEvent(
@@ -93,6 +83,7 @@ public class ProxyServiceUtils {
         );
     }
 
+    @SuppressWarnings("deprecation")
     private static HoverEvent parseHoverEvent(JsonObject object) {
         return new HoverEvent(
                 HoverEvent.Action.valueOf(

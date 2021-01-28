@@ -3,7 +3,7 @@ package cn.hamster3.service.server;
 import cn.hamster3.service.server.data.ServerConfig;
 import cn.hamster3.service.server.handler.ServiceCentre;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -44,17 +44,17 @@ public class ServerMain {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ServiceCentre(config));
-        bootstrap.bind(config.getServiceAddress(), config.getServicePort()).addListener((ChannelFutureListener) future -> {
+        ChannelFuture channelFuture = bootstrap.bind(config.getServiceAddress(), config.getServicePort());
+        channelFuture.addListener(future -> {
             if (future.isSuccess()) {
-                logger.info("服务器已启动. 输入 stop 关闭服务器.");
+                logger.info("服务器已启动.");
             } else {
-                logger.warn("服务器启动失败!");
-                future.cause().printStackTrace();
+                logger.error("服务器启动失败: {}", future.cause().toString());
             }
         });
         started = true;
         Scanner scanner = new Scanner(System.in);
-        logger.info("命令执行器准备就绪.");
+        logger.info("命令执行器准备就绪. 输入 stop 关闭服务器.");
         while (started) {
             executeCommand(scanner.nextLine());
         }

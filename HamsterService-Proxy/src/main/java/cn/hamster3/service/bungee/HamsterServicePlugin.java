@@ -3,6 +3,7 @@ package cn.hamster3.service.bungee;
 import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.handler.ServiceConnection;
+import cn.hamster3.service.bungee.listener.RepeatLoginListener;
 import cn.hamster3.service.bungee.listener.ServiceLogReceiveListener;
 import cn.hamster3.service.bungee.listener.ServiceLogSendListener;
 import cn.hamster3.service.bungee.listener.ServiceMainListener;
@@ -41,6 +42,9 @@ public class HamsterServicePlugin extends Plugin implements Listener {
         }
         if (config.getBoolean("logReceive")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceLogReceiveListener());
+        }
+        if (config.getBoolean("repeatLoginProtect.enable")) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatLoginListener(config.getBoolean("repeatLoginProtect.block")));
         }
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
     }

@@ -19,20 +19,26 @@ public class ServicePlayerInfo {
      */
     private final String playerName;
     /**
-     * 玩家所在的bukkit服务器名称
+     * 玩家所在的 bukkit 服务器名称
      */
     private final String bukkitServer;
+    /**
+     * 玩家所在的 代理 服务器名称
+     */
+    private final String proxyServer;
 
-    public ServicePlayerInfo(@NotNull UUID uuid, @NotNull String playerName, @NotNull String bukkitServer) {
+    public ServicePlayerInfo(@NotNull UUID uuid, @NotNull String playerName, @NotNull String bukkitServer, @NotNull String proxyServer) {
         this.uuid = uuid;
         this.playerName = playerName;
         this.bukkitServer = bukkitServer;
+        this.proxyServer = proxyServer;
     }
 
     public ServicePlayerInfo(JsonObject object) {
         uuid = UUID.fromString(object.get("uuid").getAsString());
         playerName = object.get("playerName").getAsString();
         bukkitServer = object.get("bukkitServer").getAsString();
+        proxyServer = object.get("proxyServer").getAsString();
     }
 
     public JsonObject saveToJson() {
@@ -40,6 +46,7 @@ public class ServicePlayerInfo {
         object.addProperty("uuid", uuid.toString());
         object.addProperty("playerName", playerName);
         object.addProperty("bukkitServer", bukkitServer);
+        object.addProperty("proxyServer", proxyServer);
         return object;
     }
 
@@ -71,6 +78,11 @@ public class ServicePlayerInfo {
     @NotNull
     public String getBukkitServer() {
         return bukkitServer;
+    }
+
+    @NotNull
+    public String getProxyServer() {
+        return proxyServer;
     }
 
     @Override

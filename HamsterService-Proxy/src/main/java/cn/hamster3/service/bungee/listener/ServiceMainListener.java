@@ -4,7 +4,7 @@ import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.bungee.event.ServiceConnectEvent;
-import cn.hamster3.service.bungee.util.ProxyServiceUtils;
+import cn.hamster3.service.common.util.ComponentUtils;
 import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
@@ -19,6 +19,7 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -84,13 +85,13 @@ public class ServiceMainListener implements Listener {
                 if (player == null) {
                     return;
                 }
-                player.sendMessage(ProxyServiceUtils.parseComponentFromJson(object.get("message")));
+                player.sendMessage(ComponentUtils.parseComponentFromJson(object.get("message")));
                 break;
             }
             case "broadcastMessage": {
                 JsonObject object = content.getAsJsonObject();
                 for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                    player.sendMessage(ProxyServiceUtils.parseComponentFromJson(object));
+                    player.sendMessage(ComponentUtils.parseComponentFromJson(object));
                 }
                 break;
             }
@@ -112,6 +113,16 @@ public class ServiceMainListener implements Listener {
                 player.connect(ProxyServer.getInstance().getServerInfo(location.getServerName()));
                 break;
             }
+            case "kickPlayer": {
+                JsonObject object = content.getAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player != null) {
+                    player.disconnect(ComponentUtils.parseComponentFromJson(object.get("reason")));
+                    return;
+                }
+                break;
+            }
         }
     }
 
@@ -121,13 +132,15 @@ public class ServiceMainListener implements Listener {
         ServicePlayerInfo playerInfo = new ServicePlayerInfo(
                 player.getUniqueId(),
                 player.getName(),
-                event.getServer().getInfo().getName()
+                event.getServer().getInfo().getName(),
+                ServiceInfoAPI.getLocalServerName()
         );
         ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfo", playerInfo.saveToJson());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPostLogin(PostLoginEvent event) {
+        System.out.println(1);
         ProxiedPlayer player = event.getPlayer();
         ServiceMessageAPI.sendMessage("HamsterService", "playerPostLogin", player.getUniqueId().toString());
     }

@@ -5,9 +5,11 @@ import cn.hamster3.service.bukkit.data.BukkitLocation;
 import cn.hamster3.service.bukkit.handler.ServiceConnection;
 import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
+import cn.hamster3.service.common.util.ComponentUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -141,6 +143,11 @@ public abstract class ServiceMessageAPI {
      * @param message 消息
      */
     public static void sendPlayerMessage(UUID uuid, JsonElement message) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            player.spigot().sendMessage(ComponentUtils.parseComponentFromJson(message));
+            return;
+        }
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("message", message);
@@ -197,7 +204,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("sendPlayer", sendPlayer.toString());
         object.addProperty("toPlayer", toPlayer.toString());
-        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToPlayer", object);
+        sendMessage("HamsterService", "sendPlayerToPlayer", object);
     }
 
     /**
@@ -233,7 +240,22 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("location", location.saveToJson());
-        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToLocation", object);
+        sendMessage("HamsterService", "sendPlayerToLocation", object);
     }
 
+    public static void kickPlayer(UUID uuid, String reason) {
+        kickPlayer(uuid, new JsonPrimitive(reason));
+    }
+
+    public static void kickPlayer(UUID uuid, JsonElement reason) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            player.kickPlayer(new TextComponent(ComponentUtils.parseComponentFromJson(reason)).toLegacyText());
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty("uuid", uuid.toString());
+        object.add("reason", reason);
+        sendMessage("HamsterService", "kickPlayer", object);
+    }
 }

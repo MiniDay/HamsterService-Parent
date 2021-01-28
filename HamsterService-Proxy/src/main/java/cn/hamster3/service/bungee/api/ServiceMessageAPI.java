@@ -1,11 +1,14 @@
 package cn.hamster3.service.bungee.api;
 
 import cn.hamster3.service.bungee.handler.ServiceConnection;
+import cn.hamster3.service.common.util.ComponentUtils;
 import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
@@ -124,9 +127,7 @@ public abstract class ServiceMessageAPI {
      * @param message 消息
      */
     public static void sendPlayerMessage(UUID uuid, String message) {
-        JsonObject object = new JsonObject();
-        object.addProperty("text", message);
-        sendPlayerMessage(uuid, object);
+        sendPlayerMessage(uuid, new JsonPrimitive(message));
     }
 
     /**
@@ -136,6 +137,11 @@ public abstract class ServiceMessageAPI {
      * @param message 消息
      */
     public static void sendPlayerMessage(UUID uuid, JsonElement message) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+        if (player != null) {
+            player.sendMessage(ComponentUtils.parseComponentFromJson(message));
+            return;
+        }
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("message", message);
@@ -149,9 +155,7 @@ public abstract class ServiceMessageAPI {
      * @since 2.1.0
      */
     public static void broadcastMessage(String message) {
-        JsonObject object = new JsonObject();
-        object.addProperty("text", message);
-        broadcastMessage(object);
+        broadcastMessage(new JsonPrimitive(message));
     }
 
     /**
@@ -187,7 +191,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("sendPlayer", sendPlayer.toString());
         object.addProperty("toPlayer", toPlayer.toString());
-        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToPlayer", object);
+        sendMessage("HamsterService", "sendPlayerToPlayer", object);
     }
 
     /**
@@ -211,7 +215,23 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("location", location.saveToJson());
-        ServiceMessageAPI.sendMessage("HamsterService", "sendPlayerToLocation", object);
+        sendMessage("HamsterService", "sendPlayerToLocation", object);
+    }
+
+    public static void kickPlayer(UUID uuid, String reason) {
+        kickPlayer(uuid, new JsonPrimitive(reason));
+    }
+
+    public static void kickPlayer(UUID uuid, JsonElement reason) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+        if (player != null) {
+            player.disconnect(ComponentUtils.parseComponentFromJson(reason));
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty("uuid", uuid.toString());
+        object.add("reason", reason);
+        sendMessage("HamsterService", "kickPlayer", object);
     }
 
 }

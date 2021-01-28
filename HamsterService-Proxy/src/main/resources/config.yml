@@ -22,3 +22,14 @@ nickName: "BC1"
 # 但是设置得太高反而会过分地消耗服务器资源
 # 一般情况下，推荐将这个值设置为 HamsterService-Server 中 nioThread 值的一半
 nioThread: 6
+
+
+repeatLoginProtect:
+  # 是否启用重复登录检测器
+  enable: true
+  # 当玩家链接进服务器时
+  # 若发现已有另一个同名玩家在服务器中
+  # 是否阻止这次进服请求？
+  # true:  不让该玩家进服
+  # false: 允许该玩家进服，并踢出已经在服务器中的那名玩家
+  block: true
