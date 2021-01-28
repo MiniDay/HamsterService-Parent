@@ -9,7 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class PlaceholderHook extends PlaceholderExpansion {
+public class ServicePlaceholderHook extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
         return "HamsterService";
