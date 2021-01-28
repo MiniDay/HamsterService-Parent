@@ -1,8 +1,8 @@
 package cn.hamster3.service.bukkit.listener;
 
 import cn.hamster3.service.bukkit.event.MessageSentEvent;
-import cn.hamster3.service.common.util.ServiceLogUtils;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bukkit.event.EventHandler;

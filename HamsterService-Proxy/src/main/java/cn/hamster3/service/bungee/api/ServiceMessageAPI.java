@@ -1,9 +1,9 @@
 package cn.hamster3.service.bungee.api;
 
 import cn.hamster3.service.bungee.handler.ServiceConnection;
-import cn.hamster3.service.common.util.ComponentUtils;
 import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
+import cn.hamster3.service.common.util.ComponentUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
