@@ -40,9 +40,9 @@ public class ServicePlaceholderHook extends PlaceholderExpansion {
             return null;
         }
         switch (params) {
-            case "bc_server_name":
+            case "proxy_server_name":
                 return info.getProxyServer();
-            case "bc_server_nick_name":
+            case "proxy_server_nick_name":
                 return ServiceInfoAPI.getSenderInfo(info.getProxyServer()).getNickName(); // 不可能为 null
         }
         return null;

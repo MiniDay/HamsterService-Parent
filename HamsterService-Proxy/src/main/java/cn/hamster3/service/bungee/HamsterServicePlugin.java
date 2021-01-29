@@ -45,6 +45,7 @@ public class HamsterServicePlugin extends Plugin implements Listener {
         }
         if (config.getBoolean("repeatLoginProtect.enable")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatLoginListener(config.getBoolean("repeatLoginProtect.block")));
+            ServiceLogUtils.info("已启用重复登录检测器.");
         }
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
     }

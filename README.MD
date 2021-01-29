@@ -14,14 +14,12 @@ HamsterService 的 Proxy 组件，该组件用于安装在 BungeeCord 服务端
 
 ### PlaceholderAPI 变量列表
 
-|变量名称|描述|示例|
-|:---|:---|:---|
-|%HamsterService_server_name%|当前所在的 bukkit 服务器名称|survival|
-|%HamsterService_server_nick_name%|当前所在的 bukkit 服务器别名|生存服|
-|%HamsterService_bc_server_name%|1111|2222|
-|%HamsterService_%|1111|2222|
-|%HamsterService_%|1111|2222|
-|%HamsterService_%|1111|2222|
+| 变量名称                                | 描述                         | 示例     |
+| :-------------------------------------- | :--------------------------- | :------- |
+| %HamsterService_server_name%            | 当前所在的 bukkit 服务器名称 | survival |
+| %HamsterService_server_nick_name%       | 当前所在的 bukkit 服务器别名 | 生存服   |
+| %HamsterService_proxy_server_name%      | 当前所在的代理服务器名称     | BC1      |
+| %HamsterService_proxy_server_nick_name% | 当前所在的代理服务器别名     | 正版验证 |
 
 ## HamsterService-Server
 
