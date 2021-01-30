@@ -35,14 +35,14 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    public void channelInactive(@NotNull ChannelHandlerContext ctx) {
-        ServiceLogUtils.warning("与服务中心断开了连接.");
+    public void channelInactive(@NotNull ChannelHandlerContext context) {
+        ServiceLogUtils.warning("与服务中心的连接已断开.");
         connection.reconnect();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        ServiceLogUtils.warning("与服务中心的通信中出现了一个错误: ");
+        ServiceLogUtils.warning("与服务中心通信时出现了一个错误: ");
         cause.printStackTrace();
     }
 

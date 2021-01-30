@@ -40,6 +40,15 @@ public class ServiceMainListener implements Listener {
             return;
         }
         ServiceLogUtils.info("连接至服务中心成功...");
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            ServicePlayerInfo playerInfo = new ServicePlayerInfo(
+                    player.getUniqueId(),
+                    player.getName(),
+                    player.getServer().getInfo().getName(),
+                    ServiceInfoAPI.getLocalServerName()
+            );
+            ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfo", playerInfo.saveToJson());
+        }
     }
 
     @EventHandler

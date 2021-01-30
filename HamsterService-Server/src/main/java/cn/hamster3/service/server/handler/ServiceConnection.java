@@ -73,12 +73,12 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext context) {
         context.close();
-        logger.warn("服务器 {} 断开了与我们的连接.", info.getName());
+        logger.warn("与服务器 {} 的连接已断开.", info.getName());
         centre.closed(this);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         logger.warn("与服务器 {} 通信时出现了一个错误: ", info.getName(), cause);
     }
 
@@ -141,7 +141,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         }
     }
 
-    private void sendServiceMessage(String action, JsonElement content) {
+    public void sendServiceMessage(String action, JsonElement content) {
         ServiceMessageInfo messageInfo = new ServiceMessageInfo(
                 centre.getInfo(),
                 "HamsterService",

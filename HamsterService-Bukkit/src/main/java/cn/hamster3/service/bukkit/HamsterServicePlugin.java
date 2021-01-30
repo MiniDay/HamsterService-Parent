@@ -43,12 +43,14 @@ public final class HamsterServicePlugin extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new ServiceLogReceiveListener(), this);
         }
         Bukkit.getPluginManager().registerEvents(new ServiceMainListener(serviceInfoAPI), this);
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new ServicePlaceholderHook().register();
-            ServiceLogUtils.info("已注册 PlaceholderAPI 占位符.");
-        } else {
-            ServiceLogUtils.warning("未找到 PlaceholderAPI 插件, 取消注册占位符.");
-        }
+        Bukkit.getScheduler().runTask(this, () -> {
+            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                new ServicePlaceholderHook().register();
+                ServiceLogUtils.info("已注册 PlaceholderAPI 占位符.");
+            } else {
+                ServiceLogUtils.warning("未找到 PlaceholderAPI 插件, 取消注册占位符.");
+            }
+        });
     }
 
     @Override

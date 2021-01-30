@@ -84,11 +84,22 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                         handler.getInfo().saveToJson()
                 )
         );
+
+        for (ServicePlayerInfo info : playerInfo) {
+            handler.sendServiceMessage("updatePlayerInfo", info.saveToJson());
+        }
+
+        for (ServiceConnection connection : registeredHandlers) {
+            if (connection.equals(handler)) {
+                continue;
+            }
+            handler.sendServiceMessage("updateServerInfo", connection.getInfo().saveToJson());
+        }
     }
 
     public void closed(ServiceConnection handler) {
         registeredHandlers.remove(handler);
-        logger.info("与服务器 {} 的链接已断开.", handler.getInfo().getName());
+        logger.info("与服务器 {} 的连接已关闭.", handler.getInfo().getName());
 
         ServiceSenderInfo info = handler.getInfo();
         if (info == null) {
