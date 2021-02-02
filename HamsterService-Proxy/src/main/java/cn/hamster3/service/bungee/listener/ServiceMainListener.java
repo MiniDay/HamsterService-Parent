@@ -13,17 +13,14 @@ import cn.hamster3.service.common.util.ServiceLogUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -159,18 +156,4 @@ public class ServiceMainListener implements Listener {
         ServiceMessageAPI.sendMessage("HamsterService", "removePlayerInfo", player.getUniqueId().toString());
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onProxyPing(ProxyPingEvent event) {
-        ServerPing response = event.getResponse();
-        ArrayList<ServicePlayerInfo> list = new ArrayList<>(ServiceInfoAPI.getOnlinePlayers());
-        int size = Math.min(list.size(), 10);
-        ServerPing.PlayerInfo[] infoArray = new ServerPing.PlayerInfo[size];
-        for (int i = 0; i < size; i++) {
-            ServicePlayerInfo playerInfo = list.get(i);
-            ServerPing.PlayerInfo info = new ServerPing.PlayerInfo(playerInfo.getPlayerName(), playerInfo.getUuid());
-            infoArray[i] = info;
-        }
-        ServerPing.Players players = new ServerPing.Players(1, ServiceInfoAPI.getOnlinePlayers().size(), infoArray);
-        response.setPlayers(players);
-    }
 }

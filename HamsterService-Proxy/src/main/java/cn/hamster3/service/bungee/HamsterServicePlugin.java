@@ -3,10 +3,7 @@ package cn.hamster3.service.bungee;
 import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.handler.ServiceConnection;
-import cn.hamster3.service.bungee.listener.RepeatLoginListener;
-import cn.hamster3.service.bungee.listener.ServiceLogReceiveListener;
-import cn.hamster3.service.bungee.listener.ServiceLogSendListener;
-import cn.hamster3.service.bungee.listener.ServiceMainListener;
+import cn.hamster3.service.bungee.listener.*;
 import cn.hamster3.service.common.util.ServiceLogUtils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -44,8 +41,13 @@ public class HamsterServicePlugin extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceLogReceiveListener());
         }
         if (config.getBoolean("repeatLoginProtect.enable")) {
-            ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatLoginListener(config.getBoolean("repeatLoginProtect.block")));
-            ServiceLogUtils.info("已启用重复登录检测器.");
+            boolean block = config.getBoolean("repeatLoginProtect.block");
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatLoginListener(block));
+            ServiceLogUtils.info("已启用重复登录检测器. block = " + block);
+        }
+        if (config.getBoolean("replaceOnlinePlayers", false)) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new ReplaceOnlinePlayersListener());
+            ServiceLogUtils.info("已启用在线玩家数替换器.");
         }
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
     }

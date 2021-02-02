@@ -9,8 +9,6 @@ serviceHost: "localhost"
 servicePort: 8123
 
 # 服务器名称
-# 请与bc中保持一致，在一些关键代码中将会被使用到
-# （例如：将玩家传送至某个服务器时，取的就是这个服务器名字）
 # "ServiceCentre" 为服务中心保留名称，请不要使用
 name: "BungeeCord1"
 
@@ -23,6 +21,13 @@ nickName: "BC1"
 # 一般情况下，推荐将这个值设置为 HamsterService-Server 中 nioThread 值的一半
 nioThread: 6
 
+# 是否替换 ping 列表玩家数显示
+# 如果你有两个 BC 都使用了 HamsterService
+# 那么如果 A 进入了3名玩家、B 进入了4名玩家
+# 则关闭该选项时，A会显示3名玩家在线，B会显示4名玩家在线
+# 若开启该选项，则A和B都会显示7名玩家在线
+# 如果你只有一个BC服务器，则该选项是否启用都无所谓
+replaceOnlinePlayers: false
 
 repeatLoginProtect:
   # 是否启用重复登录检测器

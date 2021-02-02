@@ -41,8 +41,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         try {
             ServiceMessageInfo messageInfo = new ServiceMessageInfo(JsonParser.parseString(msg).getAsJsonObject());
             if (info != null) {
-                logger.info("从服务器 {} 上收到一条消息:", info.getName());
-                logger.info(gson.toJson(messageInfo));
+                logger.info("从服务器 {} 上收到一条消息: \n {}", info.getName(), gson.toJson(messageInfo));
             }
             if ("HamsterService".equals(messageInfo.getTag())) {
                 executeServiceMessage(messageInfo);
