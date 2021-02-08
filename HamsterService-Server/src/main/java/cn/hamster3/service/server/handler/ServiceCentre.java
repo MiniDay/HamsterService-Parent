@@ -121,6 +121,14 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void broadcastMessage(ServiceMessageInfo messageInfo) {
         String s = messageInfo.saveToJson().toString();
+        if (messageInfo.getToServer() != null) {
+            ServiceConnection server = getServiceSenderByServerName(messageInfo.getToServer());
+            if (server == null) {
+                return;
+            }
+            server.getChannel().writeAndFlush(s);
+            return;
+        }
         for (ServiceConnection handler : registeredHandlers) {
             if (handler.isSubscribedTags(messageInfo.getTag())) {
                 handler.getChannel().writeAndFlush(s);
@@ -130,6 +138,16 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public void broadcastServiceMessage(ServiceMessageInfo messageInfo) {
         String s = messageInfo.saveToJson().toString();
+
+        if (messageInfo.getToServer() != null) {
+            ServiceConnection server = getServiceSenderByServerName(messageInfo.getToServer());
+            if (server == null) {
+                return;
+            }
+            server.getChannel().writeAndFlush(s);
+            return;
+        }
+
         for (ServiceConnection handler : registeredHandlers) {
             handler.getChannel().writeAndFlush(s);
         }

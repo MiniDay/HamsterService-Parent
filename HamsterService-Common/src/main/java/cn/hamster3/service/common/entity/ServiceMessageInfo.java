@@ -14,6 +14,7 @@ public class ServiceMessageInfo {
      * 消息发送者
      */
     private final ServiceSenderInfo senderInfo;
+    private final String toServer;
     /**
      * 消息标签
      * <p>
@@ -38,7 +39,12 @@ public class ServiceMessageInfo {
     }
 
     public ServiceMessageInfo(@NotNull ServiceSenderInfo senderInfo, @NotNull String tag, @NotNull String action, @Nullable JsonElement content) {
+        this(senderInfo, null, tag, action, content);
+    }
+
+    public ServiceMessageInfo(@NotNull ServiceSenderInfo senderInfo, @Nullable String toServer, @NotNull String tag, @NotNull String action, @Nullable JsonElement content) {
         this.senderInfo = senderInfo;
+        this.toServer = toServer;
         this.tag = tag;
         this.action = action;
         this.content = content;
@@ -46,6 +52,11 @@ public class ServiceMessageInfo {
 
     public ServiceMessageInfo(@NotNull JsonObject object) {
         senderInfo = new ServiceSenderInfo(object.getAsJsonObject("senderInfo"));
+        if (object.has("toServer")) {
+            toServer = object.get("toServer").getAsString();
+        } else {
+            toServer = null;
+        }
         tag = object.get("tag").getAsString();
         action = object.get("action").getAsString();
         content = object.get("content");
@@ -60,6 +71,9 @@ public class ServiceMessageInfo {
     public JsonObject saveToJson() {
         JsonObject object = new JsonObject();
         object.add("senderInfo", senderInfo.saveToJson());
+        if (toServer != null) {
+            object.addProperty("toServer", toServer);
+        }
         object.addProperty("tag", tag);
         object.addProperty("action", action);
         object.add("content", content);
@@ -74,6 +88,17 @@ public class ServiceMessageInfo {
     @NotNull
     public ServiceSenderInfo getSenderInfo() {
         return senderInfo;
+    }
+
+    /**
+     * 获取定向发送的接受者
+     * <p>
+     * 如果返回为 null 则代表广播消息
+     *
+     * @return 定向发送的接受者
+     */
+    public String getToServer() {
+        return toServer;
     }
 
     /**
