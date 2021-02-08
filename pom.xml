@@ -17,7 +17,7 @@
 
     <packaging>pom</packaging>
 
-    <name>HamsterService-Parent</name>
+    <name>HamsterService</name>
     <url>https://github.com/MiniDay/HamsterService-Parent</url>
     <description>基于Netty的Minecraft服务端消息插件</description>
 
