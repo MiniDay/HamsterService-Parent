@@ -97,6 +97,10 @@ public class ServiceMainListener implements Listener {
                 serviceInfoAPI.removeSenderInfo(info.getContent().getAsString());
                 break;
             }
+            case "bukkitCommand": {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), info.getContentAsString());
+                break;
+            }
             case "sendPlayerToPlayer": {
                 JsonObject object = info.getContent().getAsJsonObject();
                 Player player = Bukkit.getPlayer(UUID.fromString(object.get("toPlayer").getAsString()));

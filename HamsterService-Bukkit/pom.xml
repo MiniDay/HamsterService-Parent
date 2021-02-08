@@ -5,7 +5,7 @@
     <parent>
         <artifactId>HamsterService-Parent</artifactId>
         <groupId>cn.hamster3</groupId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>2.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,6 @@
         <dependency>
             <groupId>cn.hamster3</groupId>
             <artifactId>HamsterService-Common</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

@@ -2,11 +2,11 @@
 <configuration status="WARN">
     <appenders>
         <console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss:SSS} %p] - %m%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss:SSS} %p] %m%n"/>
         </console>
         <RollingFile name="File" fileName="logs/latest.log"
                      filePattern="logs/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout pattern="[%d{HH:mm:ss:SSS} %p] - %m%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss:SSS} %p] %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
                 <SizeBasedTriggeringPolicy size="100 MB"/>
@@ -18,7 +18,6 @@
             <appender-ref ref="Console"/>
             <appender-ref ref="File"/>
         </root>
-        <!--suppress CheckTagEmptyBody -->
-        <logger name="io.netty" level="INFO"></logger>
+        <logger name="io.netty" level="INFO"/>
     </loggers>
 </configuration>
