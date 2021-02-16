@@ -10,9 +10,9 @@ public enum ServiceSenderType {
      */
     BUKKIT,
     /**
-     * BungeeCord服务器
+     * BungeeCord 等代理服务器
      */
-    BUNGEE_CORD,
+    PROXY,
     /**
      * 消息中心服务器（名称为：ServiceCentre）
      */

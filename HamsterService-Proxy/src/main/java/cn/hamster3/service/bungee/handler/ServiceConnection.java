@@ -39,7 +39,7 @@ public class ServiceConnection {
         this.plugin = plugin;
         Configuration config = plugin.getConfig();
         selfInfo = new ServiceSenderInfo(
-                ServiceSenderType.BUNGEE_CORD,
+                ServiceSenderType.PROXY,
                 config.getString("name"),
                 config.getString("nickName")
         );

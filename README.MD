@@ -8,10 +8,6 @@ JavaDoc 将在之后不久提供
 
 HamsterService 的 Bukkit 组件，该组件用于安装在 Bukkit 服务端
 
-## HamsterService-Proxy
-
-HamsterService 的 Proxy 组件，该组件用于安装在 BungeeCord 服务端
-
 ### PlaceholderAPI 变量列表
 
 | 变量名称                                | 描述                         | 示例     |
@@ -20,6 +16,10 @@ HamsterService 的 Proxy 组件，该组件用于安装在 BungeeCord 服务端
 | %HamsterService_server_nick_name%       | 当前所在的 bukkit 服务器别名 | 生存服   |
 | %HamsterService_proxy_server_name%      | 当前所在的代理服务器名称     | BC1      |
 | %HamsterService_proxy_server_nick_name% | 当前所在的代理服务器别名     | 正版验证 |
+
+## HamsterService-Proxy
+
+HamsterService 的 Proxy 组件，该组件用于安装在 BungeeCord 服务端
 
 ## HamsterService-Server
 
@@ -40,7 +40,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
     <repositories>
         <repository>
             <id>hamster3</id>
-            <url>http://maven.hamster3.cn/repository/maven-public/</url>
+            <url>http://maven.hamster3.cn/repository/miniday-repo/</url>
         </repository>
     </repositories>
 
@@ -50,7 +50,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
             <artifactId>HamsterService-Bukkit</artifactId>
             <!--            如果是开发 BungeeCord 插件的话请更改至这个依赖-->
             <!--            <artifactId>HamsterService-Proxy</artifactId>-->
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.4.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -63,12 +63,12 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
 
 ```groovy
     repositories {
-    maven { url 'http://maven.hamster3.cn/repository/maven-public/' }
+    maven { url 'http://maven.hamster3.cn/repository/miniday-repo/' }
 }
 dependencies {
-    implementation 'cn.hamster3:HamsterService-Bukkit:2.0.0-SNAPSHOT'
+    implementation 'cn.hamster3:HamsterService-Bukkit:2.4.1-SNAPSHOT'
 //    如果是开发 BungeeCord 插件的话请更改至这个依赖
-//    implementation 'cn.hamster3:HamsterService-Proxy:2.0.0-SNAPSHOT'
+//    implementation 'cn.hamster3:HamsterService-Proxy:2.4.1-SNAPSHOT'
 }
 
 ```
@@ -167,11 +167,6 @@ content可以存储任何Json支持的数据：int、long、字符串、JsonObje
 由于插件为了方便快捷（以及为了照顾强迫症患者）去除了很多繁琐的代码判断，所有的类型判断由人为检查  
 因此请注意收发信息时的content格式，若使用不当则可能会引发事件报错  
 （↑比如你明明发消息的时候写的是个字符串，读取的时候却`getAsJsonObject()`）
-
-# TODO LIST
-
-- 实现跨服广播接口 （2.1.0 √）
-- 实现跨服传送接口 （2.1.0 √）
 
 # 本项目使用的其他开源项目
 

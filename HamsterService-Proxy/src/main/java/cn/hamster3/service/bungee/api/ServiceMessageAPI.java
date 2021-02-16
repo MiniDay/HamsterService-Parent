@@ -121,6 +121,26 @@ public abstract class ServiceMessageAPI {
     }
 
     /**
+     * 强制玩家执行一个 bukkit 命令
+     *
+     * @param uuid    玩家的uuid
+     * @param command 命令内容
+     */
+    public static void dispatchBukkitCommand(UUID uuid, String command) {
+        sendMessage("HamsterService", "dispatchBukkitCommand", command);
+    }
+
+    /**
+     * 强制玩家执行一个代理端（指BungeeCord等）命令
+     *
+     * @param uuid    玩家的uuid
+     * @param command 命令内容
+     */
+    public static void dispatchProxyCommand(UUID uuid, String command) {
+        sendMessage("HamsterService", "dispatchProxyCommand", command);
+    }
+
+    /**
      * 给玩家发送一条消息
      *
      * @param uuid    玩家

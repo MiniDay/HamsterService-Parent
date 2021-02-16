@@ -101,6 +101,26 @@ public class ServiceMainListener implements Listener {
                 ProxyServer.getInstance().broadcast(ComponentUtils.parseComponentFromJson(content.getAsJsonObject()));
                 break;
             }
+            case "dispatchBukkitCommand": {
+                JsonObject object = content.getAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player == null) {
+                    return;
+                }
+                player.chat("/" + object.get("command").getAsString());
+                break;
+            }
+            case "dispatchProxyCommand": {
+                JsonObject object = content.getAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player == null) {
+                    return;
+                }
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(player, object.get("command").getAsString());
+                break;
+            }
             case "sendPlayerToLocation": {
                 JsonObject object = info.getContent().getAsJsonObject();
                 UUID uuid = UUID.fromString(object.get("uuid").getAsString());
