@@ -1,5 +1,6 @@
 package cn.hamster3.service.common.entity;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,15 @@ public class ServiceMessageInfo {
      * 消息发送者
      */
     private final ServiceSenderInfo senderInfo;
+    /**
+     * 接受该消息的目标服务器
+     * <p>
+     * 一旦设定该值，则此条消息将会由 HamsterService-Server 过滤
+     * <p>
+     * 仅服务器名称匹配的子端才能接收到这条消息
+     * <p>
+     * 若不设定（值为null），则该消息会广播给所有子端
+     */
     private final String toServer;
     /**
      * 消息标签
@@ -164,6 +174,24 @@ public class ServiceMessageInfo {
      */
     public String getContentAsString() {
         return content.getAsString();
+    }
+
+    /**
+     * 以 JsonObject 对象获取消息内容
+     *
+     * @return 消息内容
+     */
+    public JsonObject getContentAsJsonObject() {
+        return content.getAsJsonObject();
+    }
+
+    /**
+     * 以 JsonArray 对象获取消息内容
+     *
+     * @return 消息内容
+     */
+    public JsonArray getContentAsJsonArray() {
+        return content.getAsJsonArray();
     }
 
     @Override
