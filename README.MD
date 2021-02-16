@@ -172,8 +172,8 @@ content可以存储任何Json支持的数据：int、long、字符串、JsonObje
 
 | 项目名称                                                     | 开源协议                                                                            | 描述                              |
 | :----------------------------------------------------------- | :---------------------------------------------------------------------------------- | :-------------------------------- |
-| [Spigot](https://www.spigotmc.org/)                          | 未知                                                                                | 提供了 Bukkit 插件的 API 支持     |
-| [BungeeCord](https://github.com/SpigotMC/BungeeCord)         | [BSD](https://github.com/SpigotMC/BungeeCord/blob/master/LICENSE)                   | 提供了 BungeeCord 插件的 API 支持 |
+| [Spigot-API](https://www.spigotmc.org/)                          | 未知                                                                                | 提供了 Bukkit 插件的 API 支持     |
+| [BungeeCord-API](https://github.com/SpigotMC/BungeeCord)         | [BSD](https://github.com/SpigotMC/BungeeCord/blob/master/LICENSE)                   | 提供了 BungeeCord 插件的 API 支持 |
 | [Netty](https://github.com/netty/netty)                      | [Apache-2.0](https://github.com/netty/netty/blob/4.1/LICENSE.txt)                   | 提供了网络通信支持                |
 | [Gson](https://github.com/google/gson)                       | [Apache-2.0](https://github.com/google/gson/blob/master/LICENSE)                    | 提供了 Json 解析支持              |
 | [snakeyaml](https://bitbucket.org/asomov/snakeyaml)          | [Apache-2.0](https://bitbucket.org/asomov/snakeyaml/src/master/LICENSE.txt)         | 提供了 YAML 解析支持              |
