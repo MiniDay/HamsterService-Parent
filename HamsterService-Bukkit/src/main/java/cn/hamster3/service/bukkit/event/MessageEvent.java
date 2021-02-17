@@ -1,6 +1,7 @@
 package cn.hamster3.service.bukkit.event;
 
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ public class MessageEvent extends Event {
     private final ServiceMessageInfo messageInfo;
 
     public MessageEvent(ServiceMessageInfo messageInfo) {
-        super(true);
+        super(!Bukkit.getServer().isPrimaryThread());
         this.messageInfo = messageInfo;
     }
 
