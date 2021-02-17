@@ -48,7 +48,6 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 return;
             }
             if (info == null) {
-                centre.closed(this);
                 JsonObject object = new JsonObject();
                 object.addProperty("action", "disconnect");
                 object.addProperty("message", "请先注册后再使用消息服务!");
@@ -60,12 +59,27 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 );
                 channel.writeAndFlush(notRegisterCloseMessage.saveToJson().toString());
                 channel.close();
+                centre.closed(this);
                 return;
             }
             centre.broadcastMessage(messageInfo);
         } catch (Exception e) {
-            logger.warn("处理消息 {} 时出现错误: ", msg);
-            e.printStackTrace();
+            logger.warn("处理消息 {} 时出现错误: {}", msg, e);
+            if (info != null) {
+                return;
+            }
+            JsonObject object = new JsonObject();
+            object.addProperty("action", "disconnect");
+            object.addProperty("message", "注册消息接收失败!");
+            ServiceMessageInfo notRegisterCloseMessage = new ServiceMessageInfo(
+                    centre.getInfo(),
+                    "HamsterService",
+                    "disconnect",
+                    object
+            );
+            channel.writeAndFlush(notRegisterCloseMessage.saveToJson().toString());
+            channel.close();
+            centre.closed(this);
         }
     }
 
