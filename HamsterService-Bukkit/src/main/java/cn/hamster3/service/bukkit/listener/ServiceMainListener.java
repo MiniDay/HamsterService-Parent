@@ -10,6 +10,7 @@ import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.util.ServiceLogUtils;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
@@ -67,12 +68,13 @@ public class ServiceMainListener implements Listener {
         }
         switch (info.getAction()) {
             case "resetAllInfo": {
-                JsonObject object = info.getContent().getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 HashSet<ServicePlayerInfo> playerInfo = new HashSet<>();
                 for (JsonElement element : object.getAsJsonArray("playerInfo")) {
                     playerInfo.add(new ServicePlayerInfo(element.getAsJsonObject()));
                 }
                 serviceInfoAPI.resetAllPlayerInfo(playerInfo);
+
                 HashSet<ServiceSenderInfo> senderInfo = new HashSet<>();
                 for (JsonElement element : object.getAsJsonArray("senderInfo")) {
                     senderInfo.add(new ServiceSenderInfo(element.getAsJsonObject()));
@@ -80,29 +82,50 @@ public class ServiceMainListener implements Listener {
                 serviceInfoAPI.resetAllServerInfo(senderInfo);
                 break;
             }
-            case "updatePlayerInfo": {
-                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContent().getAsJsonObject()));
+            case "updatePlayerInfoArray": {
+                JsonArray array = info.getContentAsJsonArray();
+                for (JsonElement element : array) {
+                    ServicePlayerInfo playerInfo = new ServicePlayerInfo(element.getAsJsonObject());
+                    serviceInfoAPI.loadPlayerInfo(playerInfo);
+                }
                 break;
             }
-            case "removePlayerInfo": {
-                UUID uuid = UUID.fromString(info.getContent().getAsString());
-                serviceInfoAPI.removePlayerInfo(uuid);
+            case "updatePlayerInfo": {
+                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
+                break;
+            }
+            case "playerDisconnect": {
+                UUID uuid = UUID.fromString(info.getContentAsString());
+                ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
+                if (playerInfo != null) {
+                    playerInfo.setOnline(false);
+                }
                 break;
             }
             case "updateServerInfo": {
-                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(info.getContent().getAsJsonObject()));
+                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(info.getContentAsJsonObject()));
                 break;
             }
             case "removeServerInfo": {
-                serviceInfoAPI.removeSenderInfo(info.getContent().getAsString());
+                serviceInfoAPI.removeSenderInfo(info.getContentAsString());
                 break;
             }
-            case "bukkitCommand": {
+            case "bukkitConsoleCommand": {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), info.getContentAsString());
                 break;
             }
+            case "dispatchBukkitCommand": {
+                JsonObject object = info.getContentAsJsonObject();
+                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) {
+                    return;
+                }
+                Bukkit.dispatchCommand(player, object.get("command").getAsString());
+                break;
+            }
             case "sendPlayerToPlayer": {
-                JsonObject object = info.getContent().getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 Player player = Bukkit.getPlayer(UUID.fromString(object.get("toPlayer").getAsString()));
                 if (player != null) {
                     UUID uuid = UUID.fromString(object.get("sendPlayer").getAsString());
@@ -111,7 +134,7 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "sendPlayerToLocation": {
-                JsonObject object = info.getContent().getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 UUID uuid = UUID.fromString(object.get("uuid").getAsString());
                 BukkitLocation location = new BukkitLocation(object.getAsJsonObject("location"));
                 if (!ServiceInfoAPI.getLocalServerName().equals(location.getServerName())) {

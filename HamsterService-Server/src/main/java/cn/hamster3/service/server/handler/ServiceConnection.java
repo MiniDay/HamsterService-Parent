@@ -19,7 +19,6 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
 
     private final NioSocketChannel channel;
     private final ServiceCentre centre;
-    private final Gson gson;
     private final HashSet<String> subscribedTags;
     private ServiceSenderInfo info;
 
@@ -27,12 +26,6 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         this.centre = centre;
         this.channel = channel;
 
-        gson = new GsonBuilder()
-                .setLenient()// json宽松
-                .enableComplexMapKeySerialization()//支持Map的key为复杂对象的形式
-                .serializeNulls() //智能null
-                .setPrettyPrinting()// 调教格式
-                .create();
         subscribedTags = new HashSet<>();
     }
 
@@ -41,7 +34,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         try {
             ServiceMessageInfo messageInfo = new ServiceMessageInfo(JsonParser.parseString(msg).getAsJsonObject());
             if (info != null) {
-                logger.info("从服务器 {} 上收到一条消息: \n {}", info.getName(), gson.toJson(messageInfo));
+                logger.info("从服务器 {} 上收到一条消息: \n {}", info.getName(), centre.getGson().toJson(messageInfo));
             }
             if ("HamsterService".equals(messageInfo.getTag())) {
                 executeServiceMessage(messageInfo);
@@ -86,7 +79,11 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext context) {
         context.close();
-        logger.warn("与服务器 {} 的连接已断开.", info.getName());
+        if (info != null) {
+            logger.warn("与服务器 {} 的连接已断开.", info.getName());
+        } else {
+            logger.warn("与服务器 {} 的连接已断开.", context.channel().remoteAddress());
+        }
         centre.closed(this);
     }
 
@@ -101,28 +98,26 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 if (centre.getServiceSenderByServerName(messageInfo.getSenderInfo().getName()) != null) {
                     sendServiceMessage("registerFailed", new JsonPrimitive("已经有一个服务器使用了相同的name!"));
                     return;
-                } else {
-                    sendServiceMessage("registerSuccess", null);
                 }
+                sendServiceMessage("registerSuccess", null);
                 info = messageInfo.getSenderInfo();
-                centre.registered(this);
-                break;
-            }
-            case "serverEnabled": {
-                JsonArray playerInfoJson = new JsonArray();
+
+                JsonArray playerInfoArray = new JsonArray();
                 for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                    playerInfoJson.add(playerInfo.saveToJson());
+                    playerInfoArray.add(playerInfo.saveToJson());
                 }
 
-                JsonArray senderInfoJson = new JsonArray();
+                JsonArray senderInfoArray = new JsonArray();
                 for (ServiceConnection connection : centre.getRegisteredHandlers()) {
-                    senderInfoJson.add(connection.getInfo().saveToJson());
+                    senderInfoArray.add(connection.getInfo().saveToJson());
                 }
 
                 JsonObject response = new JsonObject();
-                response.add("playerInfo", playerInfoJson);
-                response.add("senderInfo", senderInfoJson);
+                response.add("playerInfo", playerInfoArray);
+                response.add("senderInfo", senderInfoArray);
                 sendServiceMessage("resetAllInfo", response);
+
+                centre.registered(this);
                 break;
             }
             case "subscribeTag": {
@@ -133,6 +128,16 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 subscribedTags.remove(messageInfo.getContent().getAsString());
                 break;
             }
+            case "updatePlayerInfoArray": {
+                JsonArray array = messageInfo.getContentAsJsonArray();
+                for (JsonElement element : array) {
+                    ServicePlayerInfo playerInfo = new ServicePlayerInfo(element.getAsJsonObject());
+                    centre.getAllPlayerInfo().remove(playerInfo);
+                    centre.getAllPlayerInfo().add(playerInfo);
+                }
+                centre.broadcastServiceMessage(messageInfo);
+                break;
+            }
             case "updatePlayerInfo": {
                 ServicePlayerInfo playerInfo = new ServicePlayerInfo(messageInfo.getContent().getAsJsonObject());
                 centre.getAllPlayerInfo().remove(playerInfo);
@@ -140,10 +145,10 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
-            case "removePlayerInfo": {
+            case "playerDisconnect": {
                 UUID uuid = UUID.fromString(messageInfo.getContent().getAsString());
                 ServicePlayerInfo info = centre.getPlayerInfo(uuid);
-                centre.getAllPlayerInfo().remove(info);
+                info.setOnline(false);
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }

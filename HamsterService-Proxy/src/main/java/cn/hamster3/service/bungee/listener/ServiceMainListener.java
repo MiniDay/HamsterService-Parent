@@ -10,6 +10,7 @@ import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.util.ComponentUtils;
 import cn.hamster3.service.common.util.ServiceLogUtils;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.ProxyServer;
@@ -37,6 +38,7 @@ public class ServiceMainListener implements Listener {
             return;
         }
         ServiceLogUtils.info("连接至服务中心成功...");
+        JsonArray playerInfoArray = new JsonArray();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             ServicePlayerInfo playerInfo = new ServicePlayerInfo(
                     player.getUniqueId(),
@@ -44,8 +46,9 @@ public class ServiceMainListener implements Listener {
                     player.getServer().getInfo().getName(),
                     ServiceInfoAPI.getLocalServerName()
             );
-            ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfo", playerInfo.saveToJson());
+            playerInfoArray.add(playerInfo.saveToJson());
         }
+        ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfoArray", playerInfoArray);
     }
 
     @EventHandler
@@ -70,13 +73,24 @@ public class ServiceMainListener implements Listener {
                 serviceInfoAPI.resetAllServerInfo(senderInfo);
                 break;
             }
+            case "updatePlayerInfoArray": {
+                JsonArray array = info.getContentAsJsonArray();
+                for (JsonElement element : array) {
+                    ServicePlayerInfo playerInfo = new ServicePlayerInfo(element.getAsJsonObject());
+                    serviceInfoAPI.loadPlayerInfo(playerInfo);
+                }
+                break;
+            }
             case "updatePlayerInfo": {
                 serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(content.getAsJsonObject()));
                 break;
             }
-            case "removePlayerInfo": {
+            case "playerDisconnect": {
                 UUID uuid = UUID.fromString(content.getAsString());
-                serviceInfoAPI.removePlayerInfo(uuid);
+                ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
+                if (playerInfo != null) {
+                    playerInfo.setOnline(false);
+                }
                 break;
             }
             case "updateServerInfo": {
@@ -101,14 +115,11 @@ public class ServiceMainListener implements Listener {
                 ProxyServer.getInstance().broadcast(ComponentUtils.parseComponentFromJson(content.getAsJsonObject()));
                 break;
             }
-            case "dispatchBukkitCommand": {
-                JsonObject object = content.getAsJsonObject();
-                UUID uuid = UUID.fromString(object.get("uuid").getAsString());
-                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
-                if (player == null) {
-                    return;
-                }
-                player.chat("/" + object.get("command").getAsString());
+            case "proxyConsoleCommand": {
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(
+                        ProxyServer.getInstance().getConsole(),
+                        info.getContentAsString()
+                );
                 break;
             }
             case "dispatchProxyCommand": {
@@ -173,7 +184,7 @@ public class ServiceMainListener implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
         ProxiedPlayer player = event.getPlayer();
-        ServiceMessageAPI.sendMessage("HamsterService", "removePlayerInfo", player.getUniqueId().toString());
+        ServiceMessageAPI.sendMessage("HamsterService", "playerDisconnect", player.getUniqueId().toString());
     }
 
 }

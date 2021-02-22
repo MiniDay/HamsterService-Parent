@@ -17,9 +17,9 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 public class ServiceInfoAPI {
+    private static final HashSet<ServicePlayerInfo> playerInfo = new HashSet<>();
+    private static final HashSet<ServiceSenderInfo> senderInfo = new HashSet<>();
     private static ServiceConnection connection;
-    private static HashSet<ServicePlayerInfo> playerInfo;
-    private static HashSet<ServiceSenderInfo> senderInfo;
 
     /**
      * 这个类不应该由你实例化
@@ -33,38 +33,38 @@ public class ServiceInfoAPI {
             throw new IllegalStateException("不允许重复初始化 ServiceMessageAPI !");
         }
         ServiceInfoAPI.connection = connection;
-        playerInfo = new HashSet<>();
-        senderInfo = new HashSet<>();
 
     }
 
     /**
-     * 获取玩家信息，当玩家不在线时返回null
+     * 获取玩家信息，当玩家不在线时返回 null
      *
-     * @param playerName 玩家ID
+     * @param uuid 玩家的UUID
      * @return 玩家信息
      */
-    // 不加Nullable注解是因为觉得有些时候确信玩家在线
-    // 这个时候获取又会提示null判断，就很烦
-    public static ServicePlayerInfo getPlayerInfo(@NotNull String playerName) {
-        for (ServicePlayerInfo info : playerInfo) {
-            if (info.getPlayerName().equalsIgnoreCase(playerName)) {
-                return info;
+    public static ServicePlayerInfo getPlayerInfo(@NotNull UUID uuid) {
+        synchronized (playerInfo) {
+            for (ServicePlayerInfo info : playerInfo) {
+                if (info.getUuid().equals(uuid)) {
+                    return info;
+                }
             }
         }
         return null;
     }
 
     /**
-     * 获取玩家信息，当玩家不在线时返回null
+     * 获取玩家信息，当玩家不在线时返回 null
      *
-     * @param uuid 玩家的UUID
+     * @param playerName 玩家ID
      * @return 玩家信息
      */
-    public static ServicePlayerInfo getPlayerInfo(@NotNull UUID uuid) {
-        for (ServicePlayerInfo info : playerInfo) {
-            if (info.getUuid().equals(uuid)) {
-                return info;
+    public static ServicePlayerInfo getPlayerInfo(@NotNull String playerName) {
+        synchronized (playerInfo) {
+            for (ServicePlayerInfo info : playerInfo) {
+                if (info.getPlayerName().equalsIgnoreCase(playerName)) {
+                    return info;
+                }
             }
         }
         return null;
@@ -76,8 +76,26 @@ public class ServiceInfoAPI {
      * @return 玩家们的信息
      */
     public static HashSet<ServicePlayerInfo> getOnlinePlayers() {
-        return new HashSet<>(playerInfo);
+        HashSet<ServicePlayerInfo> set = new HashSet<>();
+        for (ServicePlayerInfo info : playerInfo) {
+            if (info.isOnline()) {
+                set.add(info);
+            }
+        }
+        return set;
     }
+
+    /**
+     * 获取全部在线玩家的信息
+     *
+     * @return 玩家们的信息
+     */
+    public static HashSet<ServicePlayerInfo> getAllPlayerInfo() {
+        synchronized (playerInfo) {
+            return new HashSet<>(playerInfo);
+        }
+    }
+
 
     /**
      * 获取服务端信息
@@ -86,9 +104,11 @@ public class ServiceInfoAPI {
      * @return 服务端信息
      */
     public static ServiceSenderInfo getSenderInfo(String senderName) {
-        for (ServiceSenderInfo info : senderInfo) {
-            if (info.getName().equalsIgnoreCase(senderName)) {
-                return info;
+        synchronized (senderInfo) {
+            for (ServiceSenderInfo info : senderInfo) {
+                if (info.getName().equalsIgnoreCase(senderName)) {
+                    return info;
+                }
             }
         }
         return null;
@@ -100,7 +120,9 @@ public class ServiceInfoAPI {
      * @return 服务器信息
      */
     public static HashSet<ServiceSenderInfo> getAllSenderInfo() {
-        return senderInfo;
+        synchronized (senderInfo) {
+            return new HashSet<>(senderInfo);
+        }
     }
 
     /**
@@ -136,18 +158,10 @@ public class ServiceInfoAPI {
      * @param playerInfo 玩家信息
      */
     public void loadPlayerInfo(ServicePlayerInfo playerInfo) {
-        ServiceInfoAPI.playerInfo.remove(playerInfo);
-        ServiceInfoAPI.playerInfo.add(playerInfo);
-    }
-
-    /**
-     * （当玩家与BC断开时）移除一条玩家信息
-     *
-     * @param uuid 玩家UUID
-     */
-    public void removePlayerInfo(UUID uuid) {
-        ServicePlayerInfo info = getPlayerInfo(uuid);
-        playerInfo.remove(info);
+        synchronized (ServiceInfoAPI.playerInfo) {
+            ServiceInfoAPI.playerInfo.remove(playerInfo);
+            ServiceInfoAPI.playerInfo.add(playerInfo);
+        }
     }
 
     /**
@@ -156,8 +170,10 @@ public class ServiceInfoAPI {
      * @param senderInfo 服务器信息
      */
     public void loadServerInfo(ServiceSenderInfo senderInfo) {
-        ServiceInfoAPI.senderInfo.remove(senderInfo);
-        ServiceInfoAPI.senderInfo.add(senderInfo);
+        synchronized (ServiceInfoAPI.senderInfo) {
+            ServiceInfoAPI.senderInfo.remove(senderInfo);
+            ServiceInfoAPI.senderInfo.add(senderInfo);
+        }
     }
 
     /**
@@ -167,7 +183,9 @@ public class ServiceInfoAPI {
      */
     public void removeSenderInfo(String name) {
         ServiceSenderInfo info = getSenderInfo(name);
-        senderInfo.remove(info);
+        synchronized (ServiceInfoAPI.senderInfo) {
+            senderInfo.remove(info);
+        }
     }
 
     /**
@@ -176,7 +194,10 @@ public class ServiceInfoAPI {
      * @param playerInfo 玩家们的信息
      */
     public void resetAllPlayerInfo(HashSet<ServicePlayerInfo> playerInfo) {
-        ServiceInfoAPI.playerInfo = playerInfo;
+        synchronized (ServiceInfoAPI.playerInfo) {
+            ServiceInfoAPI.playerInfo.clear();
+            ServiceInfoAPI.playerInfo.addAll(playerInfo);
+        }
     }
 
     /**
@@ -185,6 +206,9 @@ public class ServiceInfoAPI {
      * @param senderInfo 所有服务器的信息
      */
     public void resetAllServerInfo(HashSet<ServiceSenderInfo> senderInfo) {
-        ServiceInfoAPI.senderInfo = senderInfo;
+        synchronized (ServiceInfoAPI.senderInfo) {
+            ServiceInfoAPI.senderInfo.clear();
+            ServiceInfoAPI.senderInfo.addAll(senderInfo);
+        }
     }
 }
