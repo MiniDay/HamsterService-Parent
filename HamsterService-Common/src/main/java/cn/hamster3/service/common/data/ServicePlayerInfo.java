@@ -20,10 +20,6 @@ public class ServicePlayerInfo {
      */
     private final String playerName;
     /**
-     * 玩家是否在线
-     */
-    private boolean online;
-    /**
      * 玩家所在的 bukkit 服务器名称
      */
     private final String bukkitServer;
@@ -31,6 +27,10 @@ public class ServicePlayerInfo {
      * 玩家所在的 代理 服务器名称
      */
     private final String proxyServer;
+    /**
+     * 玩家是否在线
+     */
+    private boolean online;
 
     public ServicePlayerInfo(@NotNull UUID uuid, @NotNull String playerName, @Nullable String bukkitServer, @Nullable String proxyServer) {
         this.uuid = uuid;

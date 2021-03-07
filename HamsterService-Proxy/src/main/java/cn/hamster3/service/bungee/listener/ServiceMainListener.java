@@ -57,10 +57,9 @@ public class ServiceMainListener implements Listener {
         if (!"HamsterService".equals(info.getTag())) {
             return;
         }
-        JsonElement content = info.getContent();
         switch (info.getAction()) {
             case "resetAllInfo": {
-                JsonObject object = content.getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 HashSet<ServicePlayerInfo> playerInfo = new HashSet<>();
                 for (JsonElement element : object.getAsJsonArray("playerInfo")) {
                     playerInfo.add(new ServicePlayerInfo(element.getAsJsonObject()));
@@ -82,11 +81,11 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "updatePlayerInfo": {
-                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(content.getAsJsonObject()));
+                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
                 break;
             }
             case "playerDisconnect": {
-                UUID uuid = UUID.fromString(content.getAsString());
+                UUID uuid = UUID.fromString(info.getContentAsString());
                 ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
                 if (playerInfo != null) {
                     playerInfo.setOnline(false);
@@ -94,15 +93,15 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "updateServerInfo": {
-                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(content.getAsJsonObject()));
+                serviceInfoAPI.loadServerInfo(new ServiceSenderInfo(info.getContentAsJsonObject()));
                 break;
             }
             case "removeServerInfo": {
-                serviceInfoAPI.removeSenderInfo(content.getAsString());
+                serviceInfoAPI.removeSenderInfo(info.getContentAsString());
                 break;
             }
             case "sendPlayerMessage": {
-                JsonObject object = content.getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 UUID uuid = UUID.fromString(object.get("uuid").getAsString());
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if (player == null) {
@@ -112,7 +111,7 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "broadcastMessage": {
-                ProxyServer.getInstance().broadcast(ComponentUtils.parseComponentFromJson(content.getAsJsonObject()));
+                ProxyServer.getInstance().broadcast(ComponentUtils.parseComponentFromJson(info.getContentAsJsonObject()));
                 break;
             }
             case "proxyConsoleCommand": {
@@ -123,7 +122,7 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "dispatchProxyCommand": {
-                JsonObject object = content.getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 UUID uuid = UUID.fromString(object.get("uuid").getAsString());
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if (player == null) {
@@ -151,7 +150,7 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "kickPlayer": {
-                JsonObject object = content.getAsJsonObject();
+                JsonObject object = info.getContentAsJsonObject();
                 UUID uuid = UUID.fromString(object.get("uuid").getAsString());
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if (player != null) {

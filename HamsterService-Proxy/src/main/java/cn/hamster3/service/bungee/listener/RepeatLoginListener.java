@@ -18,7 +18,7 @@ public class RepeatLoginListener implements Listener {
     @EventHandler
     public void onLogin(LoginEvent event) {
         ServicePlayerInfo info = ServiceInfoAPI.getPlayerInfo(event.getConnection().getName());
-        if (info != null) {
+        if (info != null && info.isOnline()) {
             if (block) {
                 event.setCancelled(true);
                 event.setCancelReason(TextComponent.fromLegacyText("§c已经有一个相同名称的玩家在服务器中."));

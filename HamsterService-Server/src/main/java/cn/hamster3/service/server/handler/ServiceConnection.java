@@ -3,6 +3,7 @@ package cn.hamster3.service.server.handler;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
+import cn.hamster3.service.common.util.ComponentUtils;
 import com.google.gson.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,7 +35,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
         try {
             ServiceMessageInfo messageInfo = new ServiceMessageInfo(JsonParser.parseString(msg).getAsJsonObject());
             if (info != null) {
-                logger.info("从服务器 {} 上收到一条消息: \n {}", info.getName(), centre.getGson().toJson(messageInfo));
+                logger.info("从服务器 {} 上收到一条消息: \n {}", info.getName(), ComponentUtils.getGson().toJson(messageInfo));
             }
             if ("HamsterService".equals(messageInfo.getTag())) {
                 executeServiceMessage(messageInfo);

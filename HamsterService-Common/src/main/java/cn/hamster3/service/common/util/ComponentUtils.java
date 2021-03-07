@@ -1,8 +1,6 @@
 package cn.hamster3.service.common.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -13,7 +11,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ComponentUtils {
-    public ComponentUtils() {
+    private static final Gson gson = new GsonBuilder()
+            .setLenient()// json宽松
+            .enableComplexMapKeySerialization()//支持Map的key为复杂对象的形式
+            .serializeNulls() //智能null
+            .setPrettyPrinting()// 调教格式
+            .create();
+
+    private ComponentUtils() {
     }
 
     public static BaseComponent[] parseComponentFromJson(JsonElement json) {
@@ -70,7 +75,6 @@ public class ComponentUtils {
         throw new IllegalArgumentException("非法json字符串: " + json);
     }
 
-
     private static ClickEvent parseClickEvent(JsonObject object) {
         return new ClickEvent(
                 ClickEvent.Action.valueOf(
@@ -94,5 +98,9 @@ public class ComponentUtils {
                 ),
                 parseComponentFromJson(object.get("value"))
         );
+    }
+
+    public static Gson getGson() {
+        return gson;
     }
 }

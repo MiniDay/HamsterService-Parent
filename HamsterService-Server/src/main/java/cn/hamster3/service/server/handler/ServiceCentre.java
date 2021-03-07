@@ -5,8 +5,6 @@ import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;
 import cn.hamster3.service.server.data.ServerConfig;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -33,17 +31,8 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     private final ServiceSenderInfo info;
     private final ServerConfig config;
 
-    private final Gson gson;
-
     public ServiceCentre(ServerConfig config) {
         this.config = config;
-
-        gson = new GsonBuilder()
-                .setLenient()// json宽松
-                .enableComplexMapKeySerialization()//支持Map的key为复杂对象的形式
-                .serializeNulls() //智能null
-                .setPrettyPrinting()// 调教格式
-                .create();
 
         info = new ServiceSenderInfo(
                 ServiceSenderType.SERVICE_CENTRE,
@@ -181,7 +170,4 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         return playerInfo;
     }
 
-    public Gson getGson() {
-        return gson;
-    }
 }

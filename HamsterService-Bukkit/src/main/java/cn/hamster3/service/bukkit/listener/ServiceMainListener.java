@@ -111,7 +111,10 @@ public class ServiceMainListener implements Listener {
                 break;
             }
             case "bukkitConsoleCommand": {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), info.getContentAsString());
+                Bukkit.getScheduler().runTask(
+                        HamsterServicePlugin.getInstance(),
+                        () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), info.getContentAsString())
+                );
                 break;
             }
             case "dispatchBukkitCommand": {
@@ -121,7 +124,10 @@ public class ServiceMainListener implements Listener {
                 if (player == null) {
                     return;
                 }
-                Bukkit.dispatchCommand(player, object.get("command").getAsString());
+                Bukkit.getScheduler().runTask(
+                        HamsterServicePlugin.getInstance(),
+                        () -> Bukkit.dispatchCommand(player, object.get("command").getAsString())
+                );
                 break;
             }
             case "sendPlayerToPlayer": {
