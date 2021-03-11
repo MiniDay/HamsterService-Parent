@@ -2,6 +2,7 @@ package cn.hamster3.service.bungee.api;
 
 import cn.hamster3.service.bungee.handler.ServiceConnection;
 import cn.hamster3.service.common.data.ServiceLocation;
+import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.util.ComponentUtils;
 import com.google.gson.JsonElement;
@@ -198,13 +199,15 @@ public abstract class ServiceMessageAPI {
      * @since 2.1.0
      */
     public static void sendPlayerToPlayer(UUID sendPlayer, UUID toPlayer) {
-
+        ServicePlayerInfo sendPlayerInfo = ServiceInfoAPI.getPlayerInfo(sendPlayer);
         // 如果被传送玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(sendPlayer) == null) {
+        if (sendPlayerInfo == null || !sendPlayerInfo.isOnline()) {
             return;
         }
+
+        ServicePlayerInfo toPlayerInfo = ServiceInfoAPI.getPlayerInfo(toPlayer);
         // 如果目标玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(toPlayer) == null) {
+        if (toPlayerInfo == null || !toPlayerInfo.isOnline()) {
             return;
         }
 
@@ -224,14 +227,17 @@ public abstract class ServiceMessageAPI {
      * @since 2.1.0
      */
     public static void sendPlayerToLocation(UUID uuid, ServiceLocation location) {
+        ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
+
         // 如果玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(uuid) == null) {
+        if (playerInfo == null || !playerInfo.isOnline()) {
             return;
         }
         // 如果目标服务器不在线
         if (ServiceInfoAPI.getSenderInfo(location.getServerName()) == null) {
             return;
         }
+
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("location", location.saveToJson());

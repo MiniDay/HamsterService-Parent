@@ -4,6 +4,7 @@ import cn.hamster3.service.bukkit.HamsterServicePlugin;
 import cn.hamster3.service.bukkit.data.BukkitLocation;
 import cn.hamster3.service.bukkit.handler.ServiceConnection;
 import cn.hamster3.service.common.data.ServiceLocation;
+import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.util.ComponentUtils;
 import com.google.gson.JsonElement;
@@ -212,12 +213,15 @@ public abstract class ServiceMessageAPI {
             return;
         }
 
+        ServicePlayerInfo sendPlayerInfo = ServiceInfoAPI.getPlayerInfo(sendPlayer);
         // 如果被传送玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(sendPlayer) == null) {
+        if (sendPlayerInfo == null || !sendPlayerInfo.isOnline()) {
             return;
         }
+
+        ServicePlayerInfo toPlayerInfo = ServiceInfoAPI.getPlayerInfo(toPlayer);
         // 如果目标玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(toPlayer) == null) {
+        if (toPlayerInfo == null || !toPlayerInfo.isOnline()) {
             return;
         }
 
@@ -238,6 +242,8 @@ public abstract class ServiceMessageAPI {
      */
     public static void sendPlayerToLocation(UUID uuid, ServiceLocation location) {
         Player player = Bukkit.getPlayer(uuid);
+
+        // 如果玩家在线且目标服务器为当前服务器，则直接传送
         if (player != null && ServiceInfoAPI.getLocalServerName().equals(location.getServerName())) {
             Bukkit.getScheduler().runTaskLater(
                     HamsterServicePlugin.getInstance(),
@@ -249,14 +255,18 @@ public abstract class ServiceMessageAPI {
             );
             return;
         }
-        // 如果玩家不在线
-        if (ServiceInfoAPI.getPlayerInfo(uuid) == null) {
+
+        ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
+
+        // 如果玩家不在线则什么都不做
+        if (playerInfo == null || !playerInfo.isOnline()) {
             return;
         }
-        // 如果目标服务器不在线
+        // 如果目标服务器不在线则什么都不做
         if (ServiceInfoAPI.getSenderInfo(location.getServerName()) == null) {
             return;
         }
+
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("location", location.saveToJson());
