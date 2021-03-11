@@ -32,7 +32,6 @@ public class HamsterServicePlugin extends Plugin implements Listener {
 
     @Override
     public void onEnable() {
-        connection.start();
         Configuration config = getConfig();
         if (config.getBoolean("logSend")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceLogSendListener());
@@ -50,6 +49,7 @@ public class HamsterServicePlugin extends Plugin implements Listener {
             ServiceLogUtils.info("已启用在线玩家数替换器.");
         }
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
+        connection.start();
     }
 
     @Override

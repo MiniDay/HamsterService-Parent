@@ -34,7 +34,6 @@ public final class HamsterServicePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        connection.start();
         FileConfiguration config = getConfig();
         if (config.getBoolean("logSend")) {
             Bukkit.getPluginManager().registerEvents(new ServiceLogSendListener(), this);
@@ -51,6 +50,7 @@ public final class HamsterServicePlugin extends JavaPlugin {
                 ServiceLogUtils.warning("未找到 PlaceholderAPI 插件, 取消注册占位符.");
             }
         });
+        connection.start();
     }
 
     @Override
