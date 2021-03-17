@@ -120,9 +120,11 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             server.getChannel().writeAndFlush(s);
             return;
         }
-        for (ServiceConnection handler : registeredHandlers) {
-            if (handler.isSubscribedTags(messageInfo.getTag())) {
-                handler.getChannel().writeAndFlush(s);
+        synchronized (registeredHandlers) {
+            for (ServiceConnection handler : registeredHandlers) {
+                if (handler.isSubscribedTags(messageInfo.getTag())) {
+                    handler.getChannel().writeAndFlush(s);
+                }
             }
         }
     }
@@ -139,24 +141,30 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             return;
         }
 
-        for (ServiceConnection handler : registeredHandlers) {
-            handler.getChannel().writeAndFlush(s);
+        synchronized (registeredHandlers) {
+            for (ServiceConnection handler : registeredHandlers) {
+                handler.getChannel().writeAndFlush(s);
+            }
         }
     }
 
     public ServiceConnection getServiceSenderByServerName(String serverName) {
-        for (ServiceConnection sender : registeredHandlers) {
-            if (serverName.equals(sender.getInfo().getName())) {
-                return sender;
+        synchronized (registeredHandlers) {
+            for (ServiceConnection sender : registeredHandlers) {
+                if (serverName.equals(sender.getInfo().getName())) {
+                    return sender;
+                }
             }
         }
         return null;
     }
 
     public ServicePlayerInfo getPlayerInfo(UUID uuid) {
-        for (ServicePlayerInfo playerInfo : playerInfo) {
-            if (uuid.equals(playerInfo.getUuid())) {
-                return playerInfo;
+        synchronized (playerInfo) {
+            for (ServicePlayerInfo playerInfo : playerInfo) {
+                if (uuid.equals(playerInfo.getUuid())) {
+                    return playerInfo;
+                }
             }
         }
         return null;

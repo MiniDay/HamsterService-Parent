@@ -48,19 +48,20 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
     private boolean executeServiceMessage(ServiceMessageInfo info) {
         switch (info.getAction()) {
             case "registerSuccess": {
-                for (ServiceMessageInfo serviceMessageInfo : connection.getWaitForSendMessages()) {
-                    connection.sendMessage(serviceMessageInfo, false);
+                synchronized (connection.getWaitForSendMessages()) {
+                    for (ServiceMessageInfo serviceMessageInfo : connection.getWaitForSendMessages()) {
+                        connection.sendMessage(serviceMessageInfo, false);
+                    }
+                    connection.getWaitForSendMessages().clear();
                 }
-                connection.getWaitForSendMessages().clear();
                 return false;
             }
             case "registerFailed": {
                 ServiceLogUtils.warning("==============================");
-                for (int i = 0; i < 3; i++) {
-                    ServiceLogUtils.warning("服务注册失败: " + info.getContent().getAsString());
-                }
+                ServiceLogUtils.warning("服务注册失败: " + info.getContent().getAsString());
                 ServiceLogUtils.warning("服务器即将自动关闭......");
                 ServiceLogUtils.warning("==============================");
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("由于 HamsterService 注册失败, 服务器被关闭了.")));
                 Bukkit.shutdown();
                 return true;
             }

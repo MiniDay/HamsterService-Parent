@@ -161,7 +161,9 @@ public class ServiceConnection {
      */
     public void sendMessage(ServiceMessageInfo info, boolean block) {
         if (channel == null) {
-            waitForSendMessages.add(info);
+            synchronized (waitForSendMessages) {
+                waitForSendMessages.add(info);
+            }
             return;
         }
         ChannelFuture future = channel.writeAndFlush(info.toString());

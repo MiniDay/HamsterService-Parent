@@ -49,10 +49,12 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
     private boolean executeServiceMessage(ServiceMessageInfo info) {
         switch (info.getAction()) {
             case "registerSuccess": {
-                for (ServiceMessageInfo messageInfo : connection.getWaitForSendMessages()) {
-                    connection.sendMessage(messageInfo, false);
+                synchronized (connection.getWaitForSendMessages()) {
+                    for (ServiceMessageInfo messageInfo : connection.getWaitForSendMessages()) {
+                        connection.sendMessage(messageInfo, false);
+                    }
+                    connection.getWaitForSendMessages().clear();
                 }
-                connection.getWaitForSendMessages().clear();
                 return false;
             }
             case "registerFailed": {

@@ -20,6 +20,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ServerMain {
@@ -124,18 +125,20 @@ public class ServerMain {
                 logger.info("服务器已关闭!");
 
                 logger.info("正在保存玩家存档...");
-                for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                    try {
-                        OutputStreamWriter writer = new OutputStreamWriter(
-                                new FileOutputStream(
-                                        new File(playerDataFolder, playerInfo.getUuid() + ".json")
-                                ),
-                                StandardCharsets.UTF_8
-                        );
-                        writer.write(playerInfo.saveToJson().toString());
-                        writer.close();
-                    } catch (Exception e) {
-                        logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                synchronized (centre.getAllPlayerInfo()) {
+                    for (ServicePlayerInfo playerInfo : new ArrayList<>(centre.getAllPlayerInfo())) {
+                        try {
+                            OutputStreamWriter writer = new OutputStreamWriter(
+                                    new FileOutputStream(
+                                            new File(playerDataFolder, playerInfo.getUuid() + ".json")
+                                    ),
+                                    StandardCharsets.UTF_8
+                            );
+                            writer.write(playerInfo.saveToJson().toString());
+                            writer.close();
+                        } catch (Exception e) {
+                            logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                        }
                     }
                 }
                 logger.info("玩家存档保存完毕.");
@@ -176,18 +179,20 @@ public class ServerMain {
             }
             case "save": {
                 logger.info("正在保存玩家存档...");
-                for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                    try {
-                        OutputStreamWriter writer = new OutputStreamWriter(
-                                new FileOutputStream(
-                                        new File(playerDataFolder, playerInfo.getUuid() + ".json")
-                                ),
-                                StandardCharsets.UTF_8
-                        );
-                        writer.write(playerInfo.saveToJson().toString());
-                        writer.close();
-                    } catch (Exception e) {
-                        logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                synchronized (centre.getAllPlayerInfo()) {
+                    for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
+                        try {
+                            OutputStreamWriter writer = new OutputStreamWriter(
+                                    new FileOutputStream(
+                                            new File(playerDataFolder, playerInfo.getUuid() + ".json")
+                                    ),
+                                    StandardCharsets.UTF_8
+                            );
+                            writer.write(playerInfo.saveToJson().toString());
+                            writer.close();
+                        } catch (Exception e) {
+                            logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                        }
                     }
                 }
                 logger.info("玩家存档保存完毕.");
