@@ -77,9 +77,11 @@ public class ServiceInfoAPI {
      */
     public static HashSet<ServicePlayerInfo> getOnlinePlayers() {
         HashSet<ServicePlayerInfo> set = new HashSet<>();
-        for (ServicePlayerInfo info : playerInfo) {
-            if (info.isOnline()) {
-                set.add(info);
+        synchronized (playerInfo) {
+            for (ServicePlayerInfo info : playerInfo) {
+                if (info.isOnline()) {
+                    set.add(info);
+                }
             }
         }
         return set;

@@ -74,7 +74,9 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     }
 
     public void registered(ServiceConnection handler) {
-        registeredHandlers.add(handler);
+        synchronized (registeredHandlers) {
+            registeredHandlers.add(handler);
+        }
         logger.info("服务器 {} 已注册.", handler.getInfo().getName());
 
         broadcastServiceMessage(
@@ -101,7 +103,10 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                 )
         );
 
-        registeredHandlers.remove(handler);
+        synchronized (registeredHandlers) {
+            registeredHandlers.remove(handler);
+        }
+
         logger.info("与服务器 {} 的连接已关闭.", handler.getInfo().getName());
     }
 
@@ -172,6 +177,13 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     public HashSet<ServiceConnection> getRegisteredHandlers() {
         return registeredHandlers;
+    }
+
+    public void updatePlayerInfo(ServicePlayerInfo info) {
+        synchronized (playerInfo) {
+            playerInfo.remove(info);
+            playerInfo.add(info);
+        }
     }
 
     public HashSet<ServicePlayerInfo> getAllPlayerInfo() {

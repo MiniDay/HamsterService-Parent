@@ -126,7 +126,7 @@ public class ServerMain {
 
                 logger.info("正在保存玩家存档...");
                 synchronized (centre.getAllPlayerInfo()) {
-                    for (ServicePlayerInfo playerInfo : new ArrayList<>(centre.getAllPlayerInfo())) {
+                    for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
                         try {
                             OutputStreamWriter writer = new OutputStreamWriter(
                                     new FileOutputStream(

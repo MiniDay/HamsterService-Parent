@@ -126,27 +126,32 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 break;
             }
             case "subscribeTag": {
-                subscribedTags.add(messageInfo.getContent().getAsString());
+                synchronized (subscribedTags) {
+                    subscribedTags.add(messageInfo.getContent().getAsString());
+                }
                 break;
             }
             case "unsubscribeTag": {
-                subscribedTags.remove(messageInfo.getContent().getAsString());
+                synchronized (subscribedTags) {
+                    subscribedTags.remove(messageInfo.getContent().getAsString());
+                }
                 break;
             }
             case "updatePlayerInfoArray": {
                 JsonArray array = messageInfo.getContentAsJsonArray();
                 for (JsonElement element : array) {
                     ServicePlayerInfo playerInfo = new ServicePlayerInfo(element.getAsJsonObject());
-                    centre.getAllPlayerInfo().remove(playerInfo);
-                    centre.getAllPlayerInfo().add(playerInfo);
+                    synchronized (centre.getAllPlayerInfo()) {
+                        centre.getAllPlayerInfo().remove(playerInfo);
+                        centre.getAllPlayerInfo().add(playerInfo);
+                    }
                 }
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
             case "updatePlayerInfo": {
                 ServicePlayerInfo playerInfo = new ServicePlayerInfo(messageInfo.getContent().getAsJsonObject());
-                centre.getAllPlayerInfo().remove(playerInfo);
-                centre.getAllPlayerInfo().add(playerInfo);
+                centre.updatePlayerInfo(playerInfo);
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
@@ -183,7 +188,9 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     }
 
     public boolean isSubscribedTags(String tag) {
-        return subscribedTags.contains(tag);
+        synchronized (subscribedTags) {
+            return subscribedTags.contains(tag);
+        }
     }
 
 }
