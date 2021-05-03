@@ -28,30 +28,30 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <configuration>
-                        <classifier>javadoc</classifier>
-                        <links>
-                            <link>https://bukkit.windit.net/javadoc/</link>
-                            <link>https://ci.md-5.net/job/BungeeCord/ws/api/target/apidocs/</link>
-                            <link>https://javadoc.io/doc/org.jetbrains/annotations/</link>
-                            <link>https://www.javadoc.io/doc/com.google.code.gson/gson</link>
-                            <link>https://netty.io/4.1/api/</link>
-                        </links>
-                        <detectJavaApiLink>true</detectJavaApiLink>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+                <!--                <plugin>-->
+                <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+                <!--                    <artifactId>maven-javadoc-plugin</artifactId>-->
+                <!--                    <version>3.2.0</version>-->
+                <!--                    <configuration>-->
+                <!--                        <classifier>javadoc</classifier>-->
+                <!--                        <links>-->
+                <!--                            <link>https://bukkit.windit.net/javadoc/</link>-->
+                <!--                            <link>https://ci.md-5.net/job/BungeeCord/ws/api/target/apidocs/</link>-->
+                <!--                            <link>https://javadoc.io/doc/org.jetbrains/annotations/</link>-->
+                <!--                            <link>https://www.javadoc.io/doc/com.google.code.gson/gson</link>-->
+                <!--                            <link>https://netty.io/4.1/api/</link>-->
+                <!--                        </links>-->
+                <!--                        <detectJavaApiLink>true</detectJavaApiLink>-->
+                <!--                    </configuration>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <phase>install</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>jar</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                </plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
