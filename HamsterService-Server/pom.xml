@@ -37,7 +37,6 @@
                                     <mainClass>cn.hamster3.service.server.ServerMain</mainClass>
                                 </transformer>
                             </transformers>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
                 </executions>
