@@ -29,6 +29,16 @@ nioThread: 3
 # 如果你只有一个BC服务器，则该选项是否启用都无所谓
 replaceOnlinePlayers: false
 
+# 安全模式
+# 在 HamsterService-Server 控制台中
+# 输入指令 safeMode [on/off]
+# 来开启或关闭安全模式
+safeMode:
+  # 安全模式启用时，是否踢出所有在线的玩家
+  kickAll: false
+  # 安全模式的消息
+  message: "§c服务器正在维护中, 请稍后再进入."
+
 repeatLoginProtect:
   # 是否启用重复登录检测器
   enable: true

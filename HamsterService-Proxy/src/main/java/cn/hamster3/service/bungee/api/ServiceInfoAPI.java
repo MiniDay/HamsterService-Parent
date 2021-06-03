@@ -98,7 +98,6 @@ public class ServiceInfoAPI {
         }
     }
 
-
     /**
      * 获取服务端信息
      *

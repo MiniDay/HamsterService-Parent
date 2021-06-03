@@ -30,6 +30,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
 
     private final ServiceSenderInfo info;
     private final ServerConfig config;
+    private boolean safeMode;
 
     public ServiceCentre(ServerConfig config) {
         this.config = config;
@@ -110,13 +111,13 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         logger.info("与服务器 {} 的连接已关闭.", handler.getInfo().getName());
     }
 
-
     public ServiceSenderInfo getInfo() {
         return info;
     }
 
     public void broadcastMessage(ServiceMessageInfo messageInfo) {
         String s = messageInfo.saveToJson().toString();
+
         if (messageInfo.getToServer() != null) {
             ServiceConnection server = getServiceSenderByServerName(messageInfo.getToServer());
             if (server == null) {
@@ -125,6 +126,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             server.getChannel().writeAndFlush(s);
             return;
         }
+
         synchronized (registeredHandlers) {
             for (ServiceConnection handler : registeredHandlers) {
                 if (handler.isSubscribedTags(messageInfo.getTag())) {
@@ -190,4 +192,11 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         return playerInfo;
     }
 
+    public boolean isSafeMode() {
+        return safeMode;
+    }
+
+    public void setSafeMode(boolean safeMode) {
+        this.safeMode = safeMode;
+    }
 }

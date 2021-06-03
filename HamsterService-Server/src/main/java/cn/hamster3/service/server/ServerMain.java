@@ -20,7 +20,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ServerMain {
@@ -110,10 +109,11 @@ public class ServerMain {
             case "?":
             case "help": {
                 logger.info("===============================================================");
-                logger.info("help              - 查看帮助.");
-                logger.info("stop              - 关闭服务中心.");
-                logger.info("save              - 保存所有玩家数据.");
-                logger.info("command [bukkit/proxy] [命令内容] - 让所有已连接的 Bukkit/Proxy 服务器以控制台身份执行命令.");
+                logger.info("help                            - 查看帮助.");
+                logger.info("save                            - 保存所有玩家数据.");
+                logger.info("stop                            - 关闭HamsterService-Server.");
+                logger.info("safeMode [on/off]               - 开启/关闭安全模式.");
+                logger.info("command [bukkit/proxy] [命令]    - 让所有已连接的 Bukkit/BC 服务器以控制台身份执行命令.");
                 logger.info("===============================================================");
                 break;
             }
@@ -177,6 +177,40 @@ public class ServerMain {
                 logger.info("已广播命令执行信息.");
                 break;
             }
+            case "safeMode": {
+                boolean mode = !centre.isSafeMode();
+                if (args.length >= 2) {
+                    switch (args[1].toLowerCase()) {
+                        case "on":
+                        case "enable": {
+                            mode = true;
+                            break;
+                        }
+                        case "off":
+                        case "disable": {
+                            mode = false;
+                            break;
+                        }
+                        default: {
+                            logger.info("safeMode [on/off]");
+                            return;
+                        }
+                    }
+
+                }
+                centre.broadcastServiceMessage(new ServiceMessageInfo(
+                        centre.getInfo(),
+                        "HamsterService",
+                        "safeMode",
+                        new JsonPrimitive(mode)
+                ));
+                if (mode) {
+                    logger.info("已开启安全模式.");
+                } else {
+                    logger.info("已关闭安全模式.");
+                }
+                break;
+            }
             case "save": {
                 logger.info("正在保存玩家存档...");
                 synchronized (centre.getAllPlayerInfo()) {
@@ -205,6 +239,7 @@ public class ServerMain {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static File saveDefaultFile(String name) {
         File file = new File(name);
         if (file.exists()) {

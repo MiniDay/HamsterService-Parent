@@ -48,6 +48,12 @@ public class HamsterServicePlugin extends Plugin implements Listener {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ReplaceOnlinePlayersListener());
             ServiceLogUtils.info("已启用在线玩家数替换器.");
         }
+
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new SafeModeListener(
+                config.getBoolean("safeMode.kickAll"),
+                config.getString("safeMode.message")
+        ));
+        ServiceLogUtils.info("已启用安全模式监听器.");
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
         connection.start();
     }
