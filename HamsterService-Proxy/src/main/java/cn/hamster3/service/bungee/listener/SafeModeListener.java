@@ -2,6 +2,7 @@ package cn.hamster3.service.bungee.listener;
 
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
+import cn.hamster3.service.common.util.ServiceLogUtils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -29,6 +30,11 @@ public class SafeModeListener implements Listener {
         }
         if ("safeMode".equals(info.getAction())) {
             safeMode = info.getContent().getAsBoolean();
+            if (safeMode) {
+                ServiceLogUtils.info("已开启安全模式.");
+            } else {
+                ServiceLogUtils.info("已关闭安全模式.");
+            }
             if (kickAll && safeMode) {
                 for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                     player.disconnect(new TextComponent(message));

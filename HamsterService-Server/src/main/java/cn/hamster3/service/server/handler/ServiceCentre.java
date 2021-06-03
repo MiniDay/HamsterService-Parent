@@ -40,6 +40,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                 "ServiceCentre",
                 "服务中心"
         );
+        safeMode = false;
         registeredHandlers = new HashSet<>();
         playerInfo = new HashSet<>();
         logger.info("服务中心初始化完成.");
@@ -88,6 +89,12 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                         handler.getInfo().saveToJson()
                 )
         );
+        broadcastServiceMessage(new ServiceMessageInfo(
+                info,
+                "HamsterService",
+                "safeMode",
+                new JsonPrimitive(safeMode)
+        ));
     }
 
     public void closed(ServiceConnection handler) {
