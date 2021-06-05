@@ -43,6 +43,7 @@ public class CommandHandler {
         }
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     public void executeCommand(String command) throws Exception {
         String[] args = command.split(" ");
         switch (args[0].toLowerCase()) {
@@ -60,7 +61,7 @@ public class CommandHandler {
                 command(args);
                 break;
             }
-            case "safeMode": {
+            case "safemode": {
                 safeMode(args);
                 break;
             }

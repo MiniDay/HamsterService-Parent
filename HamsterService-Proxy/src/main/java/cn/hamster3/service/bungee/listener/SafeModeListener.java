@@ -36,6 +36,9 @@ public class SafeModeListener implements Listener {
             }
             if (kickAll && safeMode) {
                 for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                    if (player.hasPermission("service.admin")) {
+                        continue;
+                    }
                     player.disconnect(new TextComponent(message));
                 }
             }

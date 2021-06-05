@@ -11,8 +11,8 @@ softdepend:
 
 commands:
   safemode:
-    permission: service.safemode
+    permission: service.admin
 
 permissions:
-  service.safemode:
+  service.admin:
     default: op

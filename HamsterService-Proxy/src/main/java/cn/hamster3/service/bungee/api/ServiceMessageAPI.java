@@ -272,7 +272,7 @@ public abstract class ServiceMessageAPI {
      * @param enable 是否启用
      */
     public static void setSafeMode(boolean enable) {
-        sendServiceMessage("HamsterService", "setSafeMode", new JsonPrimitive("enable"));
+        sendServiceMessage("HamsterService", "setSafeMode", new JsonPrimitive(enable));
     }
 
     /**

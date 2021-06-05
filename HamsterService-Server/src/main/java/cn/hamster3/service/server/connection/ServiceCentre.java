@@ -91,12 +91,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                         handler.getInfo().saveToJson()
                 )
         );
-        broadcastServiceMessage(new ServiceMessageInfo(
-                info,
-                "HamsterService",
-                "setSafeMode",
-                new JsonPrimitive(safeMode)
-        ));
+        handler.sendServiceMessage("setSafeMode", new JsonPrimitive(safeMode));
     }
 
     public void closed(ServiceConnection handler) {
