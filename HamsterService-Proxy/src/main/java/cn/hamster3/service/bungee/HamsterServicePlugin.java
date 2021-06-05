@@ -2,7 +2,7 @@ package cn.hamster3.service.bungee;
 
 import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
-import cn.hamster3.service.bungee.handler.ServiceConnection;
+import cn.hamster3.service.bungee.connection.ServiceConnection;
 import cn.hamster3.service.bungee.listener.*;
 import cn.hamster3.service.common.util.ServiceLogUtils;
 import net.md_5.bungee.api.ProxyServer;

@@ -1,6 +1,6 @@
 package cn.hamster3.service.bukkit.api;
 
-import cn.hamster3.service.bukkit.handler.ServiceConnection;
+import cn.hamster3.service.bukkit.connection.ServiceConnection;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import org.jetbrains.annotations.NotNull;
@@ -97,7 +97,6 @@ public class ServiceInfoAPI {
             return new HashSet<>(playerInfo);
         }
     }
-
 
     /**
      * 获取服务端信息

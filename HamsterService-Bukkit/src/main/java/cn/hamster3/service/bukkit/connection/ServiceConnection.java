@@ -1,4 +1,4 @@
-package cn.hamster3.service.bukkit.handler;
+package cn.hamster3.service.bukkit.connection;
 
 import cn.hamster3.service.bukkit.HamsterServicePlugin;
 import cn.hamster3.service.bukkit.event.MessageSentEvent;

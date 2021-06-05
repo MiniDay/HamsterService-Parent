@@ -8,3 +8,11 @@ description: ${project.parent.description}
 
 softdepend:
   - PlaceholderAPI
+
+commands:
+  safemode:
+    permission: service.safemode
+
+permissions:
+  service.safemode:
+    default: op

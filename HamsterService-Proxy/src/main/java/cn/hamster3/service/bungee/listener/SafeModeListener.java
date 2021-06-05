@@ -21,14 +21,13 @@ public class SafeModeListener implements Listener {
         safeMode = false;
     }
 
-
     @EventHandler
     public void onMessageReceived(MessageReceivedEvent event) {
         ServiceMessageInfo info = event.getMessageInfo();
         if (!"HamsterService".equals(info.getTag())) {
             return;
         }
-        if ("safeMode".equals(info.getAction())) {
+        if ("setSafeMode".equals(info.getAction())) {
             safeMode = info.getContent().getAsBoolean();
             if (safeMode) {
                 ServiceLogUtils.info("已开启安全模式.");

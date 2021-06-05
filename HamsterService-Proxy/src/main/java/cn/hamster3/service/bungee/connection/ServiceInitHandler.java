@@ -1,4 +1,4 @@
-package cn.hamster3.service.bukkit.handler;
+package cn.hamster3.service.bungee.connection;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;

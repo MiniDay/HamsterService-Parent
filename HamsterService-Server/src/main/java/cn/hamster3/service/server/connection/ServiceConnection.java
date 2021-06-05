@@ -1,4 +1,4 @@
-package cn.hamster3.service.server.handler;
+package cn.hamster3.service.server.connection;
 
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.UUID;
 
-
+/**
+ * 代表了服务中心和某一个子服的链接
+ */
 public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     private static final Logger logger = LoggerFactory.getLogger("ServiceConnection");
 

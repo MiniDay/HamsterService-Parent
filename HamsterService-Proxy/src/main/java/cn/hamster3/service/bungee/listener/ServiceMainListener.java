@@ -48,7 +48,7 @@ public class ServiceMainListener implements Listener {
             );
             playerInfoArray.add(playerInfo.saveToJson());
         }
-        ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfoArray", playerInfoArray);
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "updatePlayerInfoArray", playerInfoArray);
     }
 
     @EventHandler
@@ -171,19 +171,19 @@ public class ServiceMainListener implements Listener {
                 event.getServer().getInfo().getName(),
                 ServiceInfoAPI.getLocalServerName()
         );
-        ServiceMessageAPI.sendMessage("HamsterService", "updatePlayerInfo", playerInfo.saveToJson());
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "updatePlayerInfo", playerInfo.saveToJson());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPostLogin(PostLoginEvent event) {
         ProxiedPlayer player = event.getPlayer();
-        ServiceMessageAPI.sendMessage("HamsterService", "playerPostLogin", player.getUniqueId().toString());
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerPostLogin", player.getUniqueId().toString());
     }
 
     @EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
         ProxiedPlayer player = event.getPlayer();
-        ServiceMessageAPI.sendMessage("HamsterService", "playerDisconnect", player.getUniqueId().toString());
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerDisconnect", player.getUniqueId().toString());
     }
 
 }

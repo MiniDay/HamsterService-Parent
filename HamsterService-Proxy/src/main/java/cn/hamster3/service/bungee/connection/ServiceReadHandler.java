@@ -1,4 +1,4 @@
-package cn.hamster3.service.bungee.handler;
+package cn.hamster3.service.bungee.connection;
 
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;

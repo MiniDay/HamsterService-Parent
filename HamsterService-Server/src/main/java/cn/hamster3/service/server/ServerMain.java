@@ -1,12 +1,10 @@
 package cn.hamster3.service.server;
 
 import cn.hamster3.service.common.data.ServicePlayerInfo;
-import cn.hamster3.service.common.entity.ServiceMessageInfo;
-import cn.hamster3.service.server.data.ServerConfig;
-import cn.hamster3.service.server.handler.ServiceCentre;
+import cn.hamster3.service.server.command.CommandHandler;
+import cn.hamster3.service.server.connection.ServiceCentre;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -20,17 +18,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Scanner;
+import java.util.List;
 
 public class ServerMain {
     private static final Logger logger = LoggerFactory.getLogger("main");
-
-    private static File playerDataFolder = new File("playerData");
-
-    private static NioEventLoopGroup loopGroup;
-    private static ServiceCentre centre;
-
-    private static boolean started;
 
     public static void main(String[] args) {
         saveDefaultFile("logSettings.xml");
@@ -49,9 +40,9 @@ public class ServerMain {
         logger.info("服务器绑定端口: {}", config.getServicePort());
         logger.info("服务器线程池数: {}", config.getNioThread());
         logger.info("白名单IP列表: {}", config.getAcceptList());
-        centre = new ServiceCentre(config);
+        ServiceCentre centre = new ServiceCentre(config);
 
-        playerDataFolder = new File("playerData");
+        File playerDataFolder = new File("playerData");
         if (playerDataFolder.mkdirs()) {
             logger.info("创建玩家存档文件夹...");
         }
@@ -73,7 +64,7 @@ public class ServerMain {
         logger.info("玩家存档加载完成.");
 
         ServerBootstrap bootstrap = new ServerBootstrap();
-        loopGroup = new NioEventLoopGroup(config.getNioThread());
+        NioEventLoopGroup loopGroup = new NioEventLoopGroup(config.getNioThread());
         bootstrap
                 .group(loopGroup)
                 .channel(NioServerSocketChannel.class)
@@ -90,153 +81,7 @@ public class ServerMain {
             }
         });
 
-        started = true;
-        Scanner scanner = new Scanner(System.in);
-        logger.info("命令执行器准备就绪. 输入 help 查看命令帮助.");
-        while (started) {
-            String command = scanner.nextLine();
-            try {
-                executeCommand(command);
-            } catch (Exception e) {
-                logger.error("执行命令 " + command + " 时遇到了一个异常: ", e);
-            }
-        }
-    }
-
-    public static void executeCommand(String command) throws Exception {
-        String[] args = command.split(" ");
-        switch (args[0].toLowerCase()) {
-            case "?":
-            case "help": {
-                logger.info("===============================================================");
-                logger.info("help                            - 查看帮助.");
-                logger.info("save                            - 保存所有玩家数据.");
-                logger.info("stop                            - 关闭HamsterService-Server.");
-                logger.info("safeMode [on/off]               - 开启/关闭安全模式.");
-                logger.info("command [bukkit/proxy] [命令]    - 让所有已连接的 Bukkit/BC 服务器以控制台身份执行命令.");
-                logger.info("===============================================================");
-                break;
-            }
-            case "end":
-            case "stop": {
-                started = false;
-                logger.info("准备关闭服务器...");
-                loopGroup.shutdownGracefully().await();
-                logger.info("服务器已关闭!");
-
-                logger.info("正在保存玩家存档...");
-                synchronized (centre.getAllPlayerInfo()) {
-                    for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                        try {
-                            OutputStreamWriter writer = new OutputStreamWriter(
-                                    new FileOutputStream(
-                                            new File(playerDataFolder, playerInfo.getUuid() + ".json")
-                                    ),
-                                    StandardCharsets.UTF_8
-                            );
-                            writer.write(playerInfo.saveToJson().toString());
-                            writer.close();
-                        } catch (Exception e) {
-                            logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
-                        }
-                    }
-                }
-                logger.info("玩家存档保存完毕.");
-                break;
-            }
-            case "command": {
-                if (args.length < 3) {
-                    logger.info("command [bukkit/proxy] [命令内容]");
-                    break;
-                }
-                String action;
-                switch (args[1].toLowerCase()) {
-                    case "bukkit": {
-                        action = "bukkitConsoleCommand";
-                        break;
-                    }
-                    case "proxy": {
-                        action = "proxyConsoleCommand";
-                        break;
-                    }
-                    default: {
-                        logger.info("command [bukkit/proxy] [命令内容]");
-                        return;
-                    }
-                }
-                StringBuilder execCommand = new StringBuilder();
-                for (int i = 2; i < args.length; i++) {
-                    execCommand.append(args[i]).append(" ");
-                }
-                centre.broadcastServiceMessage(new ServiceMessageInfo(
-                        centre.getInfo(),
-                        "HamsterService",
-                        action,
-                        new JsonPrimitive(execCommand.toString())
-                ));
-                logger.info("已广播命令执行信息.");
-                break;
-            }
-            case "safeMode": {
-                boolean mode = !centre.isSafeMode();
-                if (args.length >= 2) {
-                    switch (args[1].toLowerCase()) {
-                        case "on":
-                        case "enable": {
-                            mode = true;
-                            break;
-                        }
-                        case "off":
-                        case "disable": {
-                            mode = false;
-                            break;
-                        }
-                        default: {
-                            logger.info("safeMode [on/off]");
-                            return;
-                        }
-                    }
-
-                }
-                centre.broadcastServiceMessage(new ServiceMessageInfo(
-                        centre.getInfo(),
-                        "HamsterService",
-                        "safeMode",
-                        new JsonPrimitive(mode)
-                ));
-                if (mode) {
-                    logger.info("已开启安全模式.");
-                } else {
-                    logger.info("已关闭安全模式.");
-                }
-                break;
-            }
-            case "save": {
-                logger.info("正在保存玩家存档...");
-                synchronized (centre.getAllPlayerInfo()) {
-                    for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
-                        try {
-                            OutputStreamWriter writer = new OutputStreamWriter(
-                                    new FileOutputStream(
-                                            new File(playerDataFolder, playerInfo.getUuid() + ".json")
-                                    ),
-                                    StandardCharsets.UTF_8
-                            );
-                            writer.write(playerInfo.saveToJson().toString());
-                            writer.close();
-                        } catch (Exception e) {
-                            logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
-                        }
-                    }
-                }
-                logger.info("玩家存档保存完毕.");
-                break;
-            }
-            default: {
-                logger.info("未知指令. 请输入 help 查看帮助.");
-                break;
-            }
-        }
+        new CommandHandler(loopGroup, centre, playerDataFolder).startScanConsole();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -252,5 +97,45 @@ public class ServerMain {
             logger.error("在保存默认配置文件 {} 时遇到了一个错误: {}", name, e);
         }
         return file;
+    }
+
+    @SuppressWarnings("unused")
+    public static class ServerConfig {
+        private String serviceAddress;
+        private int servicePort;
+        private int nioThread;
+        private List<String> acceptList;
+
+        public String getServiceAddress() {
+            return serviceAddress;
+        }
+
+        public void setServiceAddress(String serviceAddress) {
+            this.serviceAddress = serviceAddress;
+        }
+
+        public int getServicePort() {
+            return servicePort;
+        }
+
+        public void setServicePort(int servicePort) {
+            this.servicePort = servicePort;
+        }
+
+        public int getNioThread() {
+            return nioThread;
+        }
+
+        public void setNioThread(int nioThread) {
+            this.nioThread = nioThread;
+        }
+
+        public List<String> getAcceptList() {
+            return acceptList;
+        }
+
+        public void setAcceptList(List<String> acceptList) {
+            this.acceptList = acceptList;
+        }
     }
 }

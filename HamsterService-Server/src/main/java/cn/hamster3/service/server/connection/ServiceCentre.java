@@ -1,10 +1,10 @@
-package cn.hamster3.service.server.handler;
+package cn.hamster3.service.server.connection;
 
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;
-import cn.hamster3.service.server.data.ServerConfig;
+import cn.hamster3.service.server.ServerMain;
 import com.google.gson.JsonPrimitive;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -21,6 +21,8 @@ import java.util.UUID;
 
 /**
  * 服务中心
+ * <p>
+ * 管理与所有子服连接对象的类
  */
 public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     private static final Logger logger = LoggerFactory.getLogger("ServiceCentre");
@@ -29,10 +31,10 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     private final HashSet<ServicePlayerInfo> playerInfo;
 
     private final ServiceSenderInfo info;
-    private final ServerConfig config;
+    private final ServerMain.ServerConfig config;
     private boolean safeMode;
 
-    public ServiceCentre(ServerConfig config) {
+    public ServiceCentre(ServerMain.ServerConfig config) {
         this.config = config;
 
         info = new ServiceSenderInfo(
@@ -92,7 +94,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         broadcastServiceMessage(new ServiceMessageInfo(
                 info,
                 "HamsterService",
-                "safeMode",
+                "setSafeMode",
                 new JsonPrimitive(safeMode)
         ));
     }

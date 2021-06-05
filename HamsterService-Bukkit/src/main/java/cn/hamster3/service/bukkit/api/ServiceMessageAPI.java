@@ -1,8 +1,8 @@
 package cn.hamster3.service.bukkit.api;
 
 import cn.hamster3.service.bukkit.HamsterServicePlugin;
+import cn.hamster3.service.bukkit.connection.ServiceConnection;
 import cn.hamster3.service.bukkit.data.BukkitLocation;
-import cn.hamster3.service.bukkit.handler.ServiceConnection;
 import cn.hamster3.service.common.data.ServiceLocation;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
@@ -38,7 +38,7 @@ public abstract class ServiceMessageAPI {
      * @param tag 标签
      */
     public static void subscribeTag(String tag) {
-        sendMessage("HamsterService", "subscribeTag", tag);
+        sendServiceMessage("HamsterService", "subscribeTag", tag);
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class ServiceMessageAPI {
      * @param tag 标签
      */
     public static void unsubscribeTag(String tag) {
-        sendMessage("HamsterService", "unsubscribeTag", tag);
+        sendServiceMessage("HamsterService", "unsubscribeTag", tag);
     }
 
     /**
@@ -63,28 +63,28 @@ public abstract class ServiceMessageAPI {
     }
 
     /**
-     * 发送一条消息
+     * 发送一条服务消息
      *
      * @param tag    消息标签
      * @param action 执行动作
      */
-    public static void sendMessage(String tag, String action) {
-        sendMessage(new ServiceMessageInfo(connection.getInfo(), tag, action, null), false);
+    public static void sendServiceMessage(String tag, String action) {
+        sendServiceMessage(new ServiceMessageInfo(connection.getInfo(), tag, action, null), false);
     }
 
     /**
-     * 发送一条有附加参数的消息
+     * 发送一条有附加参数的服务消息
      *
      * @param tag     消息标签
      * @param action  执行动作
      * @param content 附加参数
      */
-    public static void sendMessage(String tag, String action, String content) {
-        sendMessage(tag, action, new JsonPrimitive(content));
+    public static void sendServiceMessage(String tag, String action, String content) {
+        sendServiceMessage(tag, action, new JsonPrimitive(content));
     }
 
     /**
-     * 发送一条有附加参数的消息，使用 String.format() 替换附加参数
+     * 发送一条有附加参数的服务消息，使用 String.format() 替换附加参数
      *
      * @param tag     消息标签
      * @param action  执行动作
@@ -92,8 +92,8 @@ public abstract class ServiceMessageAPI {
      * @param args    替换参数
      * @see String#format(String, Object...)
      */
-    public static void sendMessage(String tag, String action, String content, Object... args) {
-        sendMessage(tag, action, new JsonPrimitive(String.format(content, args)));
+    public static void sendServiceMessage(String tag, String action, String content, Object... args) {
+        sendServiceMessage(tag, action, new JsonPrimitive(String.format(content, args)));
     }
 
     /**
@@ -103,8 +103,8 @@ public abstract class ServiceMessageAPI {
      * @param action  执行动作
      * @param content 附加参数
      */
-    public static void sendMessage(String tag, String action, JsonElement content) {
-        sendMessage(
+    public static void sendServiceMessage(String tag, String action, JsonElement content) {
+        sendServiceMessage(
                 new ServiceMessageInfo(
                         connection.getInfo(),
                         tag,
@@ -116,12 +116,12 @@ public abstract class ServiceMessageAPI {
     }
 
     /**
-     * 自定义消息信息并发送
+     * 自定义服务消息信息并发送
      *
      * @param info  消息内容
      * @param block 是否阻塞（即必须等待消息发送完成，该方法才会返回）
      */
-    public static void sendMessage(ServiceMessageInfo info, boolean block) {
+    public static void sendServiceMessage(ServiceMessageInfo info, boolean block) {
         connection.sendMessage(info, block);
     }
 
@@ -132,7 +132,7 @@ public abstract class ServiceMessageAPI {
      * @param command 命令内容
      */
     public static void dispatchBukkitCommand(UUID uuid, String command) {
-        sendMessage("HamsterService", "dispatchBukkitCommand", command);
+        sendServiceMessage("HamsterService", "dispatchBukkitCommand", command);
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class ServiceMessageAPI {
      * @param command 命令内容
      */
     public static void dispatchProxyCommand(UUID uuid, String command) {
-        sendMessage("HamsterService", "dispatchProxyCommand", command);
+        sendServiceMessage("HamsterService", "dispatchProxyCommand", command);
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("message", message);
-        sendMessage("HamsterService", "sendPlayerMessage", object);
+        sendServiceMessage("HamsterService", "sendPlayerMessage", object);
     }
 
     /**
@@ -194,7 +194,7 @@ public abstract class ServiceMessageAPI {
      * @since 2.1.0
      */
     public static void broadcastMessage(JsonElement message) {
-        sendMessage("HamsterService", "broadcastMessage", message);
+        sendServiceMessage("HamsterService", "broadcastMessage", message);
     }
 
     /**
@@ -228,7 +228,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("sendPlayer", sendPlayer.toString());
         object.addProperty("toPlayer", toPlayer.toString());
-        sendMessage("HamsterService", "sendPlayerToPlayer", object);
+        sendServiceMessage("HamsterService", "sendPlayerToPlayer", object);
     }
 
     /**
@@ -270,7 +270,7 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("location", location.saveToJson());
-        sendMessage("HamsterService", "sendPlayerToLocation", object);
+        sendServiceMessage("HamsterService", "sendPlayerToLocation", object);
     }
 
     public static void kickPlayer(UUID uuid, String reason) {
@@ -286,6 +286,95 @@ public abstract class ServiceMessageAPI {
         JsonObject object = new JsonObject();
         object.addProperty("uuid", uuid.toString());
         object.add("reason", reason);
-        sendMessage("HamsterService", "kickPlayer", object);
+        sendServiceMessage("HamsterService", "kickPlayer", object);
     }
+
+    /**
+     * 开启/关闭 安全模式
+     * <p>
+     * 在安全模式开启时玩家将无法连接至服务器
+     * <p>
+     * 且根据 config 的配置不同，有可能会踢出全部在线玩家
+     *
+     * @param enable 是否启用
+     */
+    public static void setSafeMode(boolean enable) {
+        sendServiceMessage("HamsterService", "setSafeMode", new JsonPrimitive("enable"));
+    }
+
+    /**
+     * 发送一条服务消息
+     *
+     * @param tag    消息标签
+     * @param action 执行动作
+     * @deprecated 你应该使用 sendServiceMessage
+     * <p>
+     * 因为这个方法名有歧义
+     */
+    @Deprecated
+    public static void sendMessage(String tag, String action) {
+        sendServiceMessage(tag, action);
+    }
+
+    /**
+     * 发送一条有附加参数的服务消息
+     *
+     * @param tag     消息标签
+     * @param action  执行动作
+     * @param content 附加参数
+     * @deprecated 你应该使用 sendServiceMessage
+     * <p>
+     * 因为这个方法名有歧义
+     */
+    @Deprecated
+    public static void sendMessage(String tag, String action, String content) {
+        sendServiceMessage(tag, action, content);
+    }
+
+    /**
+     * 发送一条有附加参数的服务消息，使用 String.format() 替换附加参数
+     *
+     * @param tag     消息标签
+     * @param action  执行动作
+     * @param content 附加参数
+     * @param args    替换参数
+     * @see String#format(String, Object...)
+     * @deprecated 你应该使用 sendServiceMessage
+     * <p>
+     * 因为这个方法名有歧义
+     */
+    @Deprecated
+    public static void sendMessage(String tag, String action, String content, Object... args) {
+        sendServiceMessage(tag, action, content, args);
+    }
+
+    /**
+     * 发送一条有附加参数的服务消息
+     *
+     * @param tag     消息标签
+     * @param action  执行动作
+     * @param content 附加参数
+     * @deprecated 你应该使用 sendServiceMessage
+     * <p>
+     * 因为这个方法名有歧义
+     */
+    @Deprecated
+    public static void sendMessage(String tag, String action, JsonElement content) {
+        sendServiceMessage(tag, action, content);
+    }
+
+    /**
+     * 自定义服务消息信息并发送
+     *
+     * @param info  消息内容
+     * @param block 是否阻塞（即必须等待消息发送完成，该方法才会返回）
+     * @deprecated 你应该使用 sendServiceMessage
+     * <p>
+     * 因为这个方法名有歧义
+     */
+    @Deprecated
+    public static void sendMessage(ServiceMessageInfo info, boolean block) {
+        connection.sendMessage(info, block);
+    }
+
 }

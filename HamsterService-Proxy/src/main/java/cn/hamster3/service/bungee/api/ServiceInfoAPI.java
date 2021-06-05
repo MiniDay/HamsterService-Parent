@@ -1,6 +1,6 @@
 package cn.hamster3.service.bungee.api;
 
-import cn.hamster3.service.bungee.handler.ServiceConnection;
+import cn.hamster3.service.bungee.connection.ServiceConnection;
 import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import org.jetbrains.annotations.NotNull;
