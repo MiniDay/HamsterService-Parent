@@ -98,7 +98,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
     private void executeServiceMessage(ServiceMessageInfo messageInfo) {
         switch (messageInfo.getAction()) {
             case "register": {
-                if (centre.getServiceSenderByServerName(messageInfo.getSenderInfo().getName()) != null) {
+                if (centre.getServiceSenderByName(messageInfo.getSenderInfo().getName()) != null) {
                     sendServiceMessage("registerFailed", new JsonPrimitive("已经有一个服务器使用了相同的name!"));
                     return;
                 }

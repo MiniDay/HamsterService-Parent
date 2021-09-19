@@ -123,7 +123,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         String s = messageInfo.saveToJson().toString();
 
         if (messageInfo.getToServer() != null) {
-            ServiceConnection server = getServiceSenderByServerName(messageInfo.getToServer());
+            ServiceConnection server = getServiceSenderByName(messageInfo.getToServer());
             if (server == null) {
                 return;
             }
@@ -144,7 +144,7 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         String s = messageInfo.saveToJson().toString();
 
         if (messageInfo.getToServer() != null) {
-            ServiceConnection server = getServiceSenderByServerName(messageInfo.getToServer());
+            ServiceConnection server = getServiceSenderByName(messageInfo.getToServer());
             if (server == null) {
                 return;
             }
@@ -159,10 +159,10 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
         }
     }
 
-    public ServiceConnection getServiceSenderByServerName(String serverName) {
+    public ServiceConnection getServiceSenderByName(String serverName) {
         synchronized (registeredHandlers) {
             for (ServiceConnection sender : registeredHandlers) {
-                if (serverName.equals(sender.getInfo().getName())) {
+                if (serverName.equalsIgnoreCase(sender.getInfo().getName())) {
                     return sender;
                 }
             }
