@@ -80,16 +80,10 @@ public class ServiceMainListener implements Listener {
                 }
                 break;
             }
-            case "updatePlayerInfo": {
-                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
-                break;
-            }
+            case "updatePlayerInfo":
+            case "playerPostLogin":
             case "playerDisconnect": {
-                UUID uuid = UUID.fromString(info.getContentAsString());
-                ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
-                if (playerInfo != null) {
-                    playerInfo.setOnline(false);
-                }
+                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
                 break;
             }
             case "updateServerInfo": {
@@ -177,13 +171,27 @@ public class ServiceMainListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPostLogin(PostLoginEvent event) {
         ProxiedPlayer player = event.getPlayer();
-        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerPostLogin", player.getUniqueId().toString());
+        ServicePlayerInfo playerInfo = new ServicePlayerInfo(
+                player.getUniqueId(),
+                player.getName(),
+                null,
+                ServiceInfoAPI.getLocalServerName(),
+                true
+        );
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerPostLogin", playerInfo.saveToJson());
     }
 
     @EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
         ProxiedPlayer player = event.getPlayer();
-        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerDisconnect", player.getUniqueId().toString());
+        ServicePlayerInfo playerInfo = new ServicePlayerInfo(
+                player.getUniqueId(),
+                player.getName(),
+                null,
+                ServiceInfoAPI.getLocalServerName(),
+                false
+        );
+        ServiceMessageAPI.sendServiceMessage("HamsterService", "playerDisconnect", playerInfo.saveToJson());
     }
 
 }

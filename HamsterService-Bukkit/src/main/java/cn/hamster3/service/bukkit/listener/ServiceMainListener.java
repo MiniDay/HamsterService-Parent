@@ -90,16 +90,10 @@ public class ServiceMainListener implements Listener {
                 }
                 break;
             }
-            case "updatePlayerInfo": {
-                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
-                break;
-            }
+            case "updatePlayerInfo":
+            case "playerPostLogin":
             case "playerDisconnect": {
-                UUID uuid = UUID.fromString(info.getContentAsString());
-                ServicePlayerInfo playerInfo = ServiceInfoAPI.getPlayerInfo(uuid);
-                if (playerInfo != null) {
-                    playerInfo.setOnline(false);
-                }
+                serviceInfoAPI.loadPlayerInfo(new ServicePlayerInfo(info.getContentAsJsonObject()));
                 break;
             }
             case "updateServerInfo": {

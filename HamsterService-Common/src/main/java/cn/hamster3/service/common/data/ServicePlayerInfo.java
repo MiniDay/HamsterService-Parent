@@ -40,6 +40,14 @@ public class ServicePlayerInfo {
         online = true;
     }
 
+    public ServicePlayerInfo(@NotNull UUID uuid, @NotNull String playerName, @Nullable String bukkitServer, @Nullable String proxyServer, boolean online) {
+        this.uuid = uuid;
+        this.playerName = playerName;
+        this.bukkitServer = bukkitServer;
+        this.proxyServer = proxyServer;
+        this.online = online;
+    }
+
     public ServicePlayerInfo(JsonObject object) {
         uuid = UUID.fromString(object.get("uuid").getAsString());
         playerName = object.get("playerName").getAsString();

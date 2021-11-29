@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * 代表了服务中心和某一个子服的链接
@@ -151,16 +150,11 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
-            case "updatePlayerInfo": {
+            case "updatePlayerInfo":
+            case "playerPostLogin":
+            case "playerDisconnect": {
                 ServicePlayerInfo playerInfo = new ServicePlayerInfo(messageInfo.getContent().getAsJsonObject());
                 centre.updatePlayerInfo(playerInfo);
-                centre.broadcastServiceMessage(messageInfo);
-                break;
-            }
-            case "playerDisconnect": {
-                UUID uuid = UUID.fromString(messageInfo.getContent().getAsString());
-                ServicePlayerInfo info = centre.getPlayerInfo(uuid);
-                info.setOnline(false);
                 centre.broadcastServiceMessage(messageInfo);
                 break;
             }
