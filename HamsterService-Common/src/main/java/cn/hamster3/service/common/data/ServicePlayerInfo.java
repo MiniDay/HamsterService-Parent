@@ -1,5 +1,6 @@
 package cn.hamster3.service.common.data;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,8 +53,26 @@ public class ServicePlayerInfo {
         uuid = UUID.fromString(object.get("uuid").getAsString());
         playerName = object.get("playerName").getAsString();
         online = object.get("online").getAsBoolean();
-        bukkitServer = object.get("bukkitServer").getAsString();
-        proxyServer = object.get("proxyServer").getAsString();
+        if (object.has("bukkitServer")) {
+            JsonElement bukkitServerJson = object.get("bukkitServer");
+            if (!bukkitServerJson.isJsonNull()) {
+                bukkitServer = bukkitServerJson.getAsString();
+            } else {
+                bukkitServer = null;
+            }
+        } else {
+            bukkitServer = null;
+        }
+        if (object.has("proxyServer")) {
+            JsonElement proxyServerJson = object.get("proxyServer");
+            if (!proxyServerJson.isJsonNull()) {
+                proxyServer = proxyServerJson.getAsString();
+            } else {
+                proxyServer = null;
+            }
+        } else {
+            proxyServer = null;
+        }
     }
 
     public JsonObject saveToJson() {

@@ -59,7 +59,7 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
             }
             centre.broadcastMessage(messageInfo);
         } catch (Exception e) {
-            logger.warn("处理消息 {} 时出现错误: {}", msg, e);
+            logger.error(String.format("处理消息 %s 时出现错误: ", msg), e);
             if (info != null) {
                 return;
             }
