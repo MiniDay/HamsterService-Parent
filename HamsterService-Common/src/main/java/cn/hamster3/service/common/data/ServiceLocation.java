@@ -77,6 +77,10 @@ public class ServiceLocation {
         this.worldName = worldName;
     }
 
+    public int getBlockX() {
+        return (int) x;
+    }
+
     public double getX() {
         return x;
     }
@@ -85,12 +89,21 @@ public class ServiceLocation {
         this.x = x;
     }
 
+
+    public int getBlockY() {
+        return (int) y;
+    }
+
     public double getY() {
         return y;
     }
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public int getBlockZ() {
+        return (int) z;
     }
 
     public double getZ() {
