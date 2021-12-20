@@ -75,6 +75,10 @@ public class ServerMain {
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
                 logger.info("服务器已启动.");
+                logger.info("输入 stop 来关闭该程序.");
+                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
             } else {
                 logger.error("服务器启动失败: {}", future.cause().toString());
                 loopGroup.shutdownGracefully();

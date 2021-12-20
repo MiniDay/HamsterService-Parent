@@ -50,7 +50,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
             <artifactId>HamsterService-Bukkit</artifactId>
             <!--            如果是开发 BungeeCord 插件的话请更改至这个依赖-->
             <!--            <artifactId>HamsterService-Proxy</artifactId>-->
-            <version>2.7.2-SNAPSHOT</version>
+            <version>2.7.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -66,9 +66,9 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
     maven { url 'http://maven.hamster3.cn/repository/miniday-repo/' }
 }
 dependencies {
-    implementation 'cn.hamster3:HamsterService-Bukkit:2.7.2-SNAPSHOT'
+    implementation 'cn.hamster3:HamsterService-Bukkit:2.7.3-SNAPSHOT'
 //    如果是开发 BungeeCord 插件的话请更改至这个依赖
-//    implementation 'cn.hamster3:HamsterService-Proxy:2.7.2-SNAPSHOT'
+//    implementation 'cn.hamster3:HamsterService-Proxy:2.7.3-SNAPSHOT'
 }
 
 ```
