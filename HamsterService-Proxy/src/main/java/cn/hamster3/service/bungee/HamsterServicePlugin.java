@@ -54,6 +54,8 @@ public class HamsterServicePlugin extends Plugin implements Listener {
                 config.getString("safeMode.message")
         ));
         ServiceLogUtils.info("已启用安全模式监听器.");
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new MainListener());
+        ServiceLogUtils.info("已启用主功能监听器.");
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
         connection.start();
     }
