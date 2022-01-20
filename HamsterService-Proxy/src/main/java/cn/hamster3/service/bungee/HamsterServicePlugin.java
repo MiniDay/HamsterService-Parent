@@ -39,10 +39,15 @@ public class HamsterServicePlugin extends Plugin implements Listener {
         if (config.getBoolean("logReceive")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceLogReceiveListener());
         }
-        if (config.getBoolean("repeatLoginProtect.enable")) {
-            boolean block = config.getBoolean("repeatLoginProtect.block");
+        if (config.getBoolean("repeatLoginProtect.enable", true)) {
+            boolean block = config.getBoolean("repeatLoginProtect.block", true);
             ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatLoginListener(block));
             ServiceLogUtils.info("已启用重复登录检测器. block = " + block);
+        }
+        if (config.getBoolean("repeatPlayerNameProtect.enable", true)) {
+            String message = config.getString("repeatPlayerNameProtect.message", "§c该名称已被其他玩家占用!");
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new RepeatPlayerNameListener(message));
+            ServiceLogUtils.info("已启用重复名称检测器.");
         }
         if (config.getBoolean("replaceOnlinePlayers", false)) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new ReplaceOnlinePlayersListener());
@@ -54,8 +59,6 @@ public class HamsterServicePlugin extends Plugin implements Listener {
                 config.getString("safeMode.message")
         ));
         ServiceLogUtils.info("已启用安全模式监听器.");
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new MainListener());
-        ServiceLogUtils.info("已启用主功能监听器.");
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
         connection.start();
     }

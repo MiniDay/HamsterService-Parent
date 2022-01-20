@@ -39,6 +39,14 @@ safeMode:
   # 安全模式的消息
   message: "§c服务器正在维护中, 请稍后再进入."
 
+repeatPlayerNameProtect:
+  # 是否启用重复名称检测器
+  # 当玩家 Admin 已经进入过服务器时
+  # 是否应该阻止 ADMIN、admin 等名称的玩家进服
+  enable: true
+  # 踢出消息
+  message: "§c该名称已被其他玩家占用!"
+
 repeatLoginProtect:
   # 是否启用重复登录检测器
   enable: true

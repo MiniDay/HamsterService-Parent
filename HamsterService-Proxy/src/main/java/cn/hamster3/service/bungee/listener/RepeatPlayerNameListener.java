@@ -7,7 +7,13 @@ import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class MainListener implements Listener {
+public class RepeatPlayerNameListener implements Listener {
+    private final String message;
+
+    public RepeatPlayerNameListener(String message) {
+        this.message = message;
+    }
+
     @EventHandler
     public void onPreLogin(PreLoginEvent event) {
         String name = event.getConnection().getName();
@@ -19,6 +25,6 @@ public class MainListener implements Listener {
             return;
         }
         event.setCancelled(true);
-        event.setCancelReason(new TextComponent("§c该名称已被其他玩家占用!"));
+        event.setCancelReason(new TextComponent(message));
     }
 }

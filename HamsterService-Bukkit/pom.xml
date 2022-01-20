@@ -5,7 +5,7 @@
     <parent>
         <artifactId>HamsterService-Parent</artifactId>
         <groupId>cn.hamster3</groupId>
-        <version>2.7.4-SNAPSHOT</version>
+        <version>2.7.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.70.Final</version>
+            <version>4.1.72.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
