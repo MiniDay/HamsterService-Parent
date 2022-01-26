@@ -38,9 +38,9 @@ public class BroadcastCommand implements CommandExecutor {
                 return true;
             }
         }
-        StringBuilder builder = new StringBuilder(args[2]);
+        StringBuilder builder = new StringBuilder();
         for (int i = 2; i < args.length; i++) {
-            builder.append(' ').append(args[i]);
+            builder.append(args[i]).append(" ");
         }
         ServiceMessageAPI.sendServiceMessage("HamsterService", action, builder.toString());
         sender.sendMessage("§c已广播命令执行信息.");
