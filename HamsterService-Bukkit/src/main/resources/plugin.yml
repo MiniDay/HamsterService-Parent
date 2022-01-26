@@ -10,7 +10,7 @@ softdepend:
   - PlaceholderAPI
 
 commands:
-  safemode:
+  service:
     permission: service.admin
 
 permissions:

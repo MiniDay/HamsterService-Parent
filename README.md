@@ -1,21 +1,26 @@
 # HamsterService
 
-JavaDoc 将在之后不久提供
-
 # 项目简介
 
 ## HamsterService-Bukkit
 
 HamsterService 的 Bukkit 组件，该组件用于安装在 Bukkit 服务端
 
+### 指令
+
+| 指令                                     | 描述          |
+|:---------------------------------------|:------------|
+| /service safeMode [on/off]             | 开启/关闭维护模式   |
+| /service command [bukkit/proxy] [命令内容] | 让所有子服执行一条命令 |
+
 ### PlaceholderAPI 变量列表
 
-| 变量名称                                | 描述                         | 示例     |
-| :-------------------------------------- | :--------------------------- | :------- |
+| 变量名称                                    | 描述                 | 示例       |
+|:----------------------------------------|:-------------------|:---------|
 | %HamsterService_server_name%            | 当前所在的 bukkit 服务器名称 | survival |
-| %HamsterService_server_nick_name%       | 当前所在的 bukkit 服务器别名 | 生存服   |
-| %HamsterService_proxy_server_name%      | 当前所在的代理服务器名称     | BC1      |
-| %HamsterService_proxy_server_nick_name% | 当前所在的代理服务器别名     | 正版验证 |
+| %HamsterService_server_nick_name%       | 当前所在的 bukkit 服务器别名 | 生存服      |
+| %HamsterService_proxy_server_name%      | 当前所在的代理服务器名称       | BC1      |
+| %HamsterService_proxy_server_nick_name% | 当前所在的代理服务器别名       | 正版验证     |
 
 ## HamsterService-Proxy
 
@@ -50,7 +55,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
             <artifactId>HamsterService-Bukkit</artifactId>
             <!--            如果是开发 BungeeCord 插件的话请更改至这个依赖-->
             <!--            <artifactId>HamsterService-Proxy</artifactId>-->
-            <version>2.7.5-SNAPSHOT</version>
+            <version>2.7.6-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -66,9 +71,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'cn.hamster3:HamsterService-Bukkit:2.7.5-SNAPSHOT'
+    implementation 'cn.hamster3:HamsterService-Bukkit:2.7.6-SNAPSHOT'
 //    如果是开发 BungeeCord 插件的话请更改至这个依赖
-//    implementation 'cn.hamster3:HamsterService-Proxy:2.7.5-SNAPSHOT'
+//    implementation 'cn.hamster3:HamsterService-Proxy:2.7.6-SNAPSHOT'
 }
 ```
 

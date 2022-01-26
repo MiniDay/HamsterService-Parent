@@ -2,14 +2,15 @@ package cn.hamster3.service.bukkit;
 
 import cn.hamster3.service.bukkit.api.ServiceInfoAPI;
 import cn.hamster3.service.bukkit.api.ServiceMessageAPI;
+import cn.hamster3.service.bukkit.command.BroadcastCommand;
+import cn.hamster3.service.bukkit.command.HelpCommand;
+import cn.hamster3.service.bukkit.command.SafeModeCommand;
 import cn.hamster3.service.bukkit.connection.ServiceConnection;
 import cn.hamster3.service.bukkit.hook.ServicePlaceholderHook;
 import cn.hamster3.service.bukkit.listener.ServiceLogReceiveListener;
 import cn.hamster3.service.bukkit.listener.ServiceLogSendListener;
 import cn.hamster3.service.bukkit.listener.ServiceMainListener;
-import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.util.ServiceLogUtils;
-import com.google.gson.JsonPrimitive;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -66,39 +67,22 @@ public final class HamsterServicePlugin extends JavaPlugin {
     @Override
     @SuppressWarnings("SpellCheckingInspection")
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if ("safemode".equalsIgnoreCase(command.getName())) {
-            safeMode(sender, args);
+        if (!sender.hasPermission("service.admin")) {
+            sender.sendMessage("§c你没有权限执行这个命令!");
+            return true;
+        }
+        if (args.length < 1) {
+            return HelpCommand.INSTANCE.onCommand(sender, command, label, args);
+        }
+        switch (args[0]) {
+            case "safemode": {
+                return SafeModeCommand.INSTANCE.onCommand(sender, command, label, args);
+            }
+            case "command": {
+                return BroadcastCommand.INSTANCE.onCommand(sender, command, label, args);
+            }
         }
         return true;
     }
 
-    public void safeMode(CommandSender sender, String[] args) {
-        boolean mode;
-        if (args.length < 1) {
-            sender.sendMessage("§c/safeMode [on/off]");
-            return;
-        }
-        switch (args[0].toLowerCase()) {
-            case "on":
-            case "enable": {
-                mode = true;
-                break;
-            }
-            case "off":
-            case "disable": {
-                mode = false;
-                break;
-            }
-            default: {
-                sender.sendMessage("§c/safeMode [on/off]");
-                return;
-            }
-        }
-        ServiceMessageAPI.setSafeMode(mode);
-        if (mode) {
-            sender.sendMessage("§a已开启安全模式.");
-        } else {
-            sender.sendMessage("§a已关闭安全模式.");
-        }
-    }
 }
