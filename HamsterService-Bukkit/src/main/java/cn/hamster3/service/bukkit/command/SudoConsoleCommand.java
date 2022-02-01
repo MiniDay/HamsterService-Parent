@@ -6,18 +6,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class BroadcastCommand implements CommandExecutor {
-    public static final BroadcastCommand INSTANCE = new BroadcastCommand();
+public class SudoConsoleCommand implements CommandExecutor {
+    public static final SudoConsoleCommand INSTANCE = new SudoConsoleCommand();
 
-    private BroadcastCommand() {
+    private SudoConsoleCommand() {
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("service.admin")) {
-            sender.sendMessage("§c你没有权限执行这个命令!");
-            return true;
-        }
         if (args.length < 3) {
             sender.sendMessage("§c/service command [bukkit/proxy] [命令内容]");
             return true;

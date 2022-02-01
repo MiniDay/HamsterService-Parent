@@ -2,6 +2,7 @@ package cn.hamster3.service.bungee;
 
 import cn.hamster3.service.bungee.api.ServiceInfoAPI;
 import cn.hamster3.service.bungee.api.ServiceMessageAPI;
+import cn.hamster3.service.bungee.command.ServiceCommand;
 import cn.hamster3.service.bungee.connection.ServiceConnection;
 import cn.hamster3.service.bungee.listener.*;
 import cn.hamster3.service.common.util.ServiceLogUtils;
@@ -61,6 +62,7 @@ public class HamsterServicePlugin extends Plugin implements Listener {
         ServiceLogUtils.info("已启用安全模式监听器.");
         ProxyServer.getInstance().getPluginManager().registerListener(this, new ServiceMainListener(serviceInfoAPI));
         connection.start();
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, ServiceCommand.INSTANCE);
     }
 
     @Override

@@ -2,9 +2,7 @@ package cn.hamster3.service.bukkit;
 
 import cn.hamster3.service.bukkit.api.ServiceInfoAPI;
 import cn.hamster3.service.bukkit.api.ServiceMessageAPI;
-import cn.hamster3.service.bukkit.command.BroadcastCommand;
-import cn.hamster3.service.bukkit.command.HelpCommand;
-import cn.hamster3.service.bukkit.command.SafeModeCommand;
+import cn.hamster3.service.bukkit.command.ServiceCommand;
 import cn.hamster3.service.bukkit.connection.ServiceConnection;
 import cn.hamster3.service.bukkit.hook.ServicePlaceholderHook;
 import cn.hamster3.service.bukkit.listener.ServiceLogReceiveListener;
@@ -65,24 +63,7 @@ public final class HamsterServicePlugin extends JavaPlugin {
     }
 
     @Override
-    @SuppressWarnings("SpellCheckingInspection")
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("service.admin")) {
-            sender.sendMessage("§c你没有权限执行这个命令!");
-            return true;
-        }
-        if (args.length < 1) {
-            return HelpCommand.INSTANCE.onCommand(sender, command, label, args);
-        }
-        switch (args[0]) {
-            case "safemode": {
-                return SafeModeCommand.INSTANCE.onCommand(sender, command, label, args);
-            }
-            case "command": {
-                return BroadcastCommand.INSTANCE.onCommand(sender, command, label, args);
-            }
-        }
-        return true;
+        return ServiceCommand.INSTANCE.onCommand(sender, command, label, args);
     }
-
 }
