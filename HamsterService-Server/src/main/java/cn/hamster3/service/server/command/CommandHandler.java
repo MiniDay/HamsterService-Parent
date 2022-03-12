@@ -182,13 +182,9 @@ public class CommandHandler {
         logger.info("正在保存玩家存档...");
         synchronized (centre.getAllPlayerInfo()) {
             for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
+                File dataFile = new File(playerDataFolder, playerInfo.getUuid() + ".json");
                 try {
-                    OutputStreamWriter writer = new OutputStreamWriter(
-                            new FileOutputStream(
-                                    new File(playerDataFolder, playerInfo.getUuid() + ".json")
-                            ),
-                            StandardCharsets.UTF_8
-                    );
+                    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dataFile), StandardCharsets.UTF_8);
                     writer.write(playerInfo.saveToJson().toString());
                     writer.close();
                 } catch (Exception e) {

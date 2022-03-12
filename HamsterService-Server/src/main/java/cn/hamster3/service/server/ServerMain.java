@@ -14,7 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -22,17 +25,13 @@ import java.util.List;
 
 public class ServerMain {
     private static final Logger logger = LoggerFactory.getLogger("main");
+    private static final File PLAYER_DATA_FOLDER = new File("playerData");
 
     public static void main(String[] args) {
         saveDefaultFile("logSettings.xml");
-        File file = saveDefaultFile("server.yml");
-        ServerConfig config;
-        try {
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            config = new Yaml().loadAs(reader, ServerConfig.class);
-            reader.close();
-        } catch (Exception e) {
-            logger.error("加载配置文件时遇到了一个异常: ", e);
+
+        ServerConfig config = loadConfig();
+        if (config == null) {
             return;
         }
 
@@ -42,30 +41,10 @@ public class ServerMain {
         logger.info("白名单IP列表: {}", config.getAcceptList());
         ServiceCentre centre = new ServiceCentre(config);
 
-        File playerDataFolder = new File("playerData");
-        if (playerDataFolder.mkdirs()) {
-            logger.info("创建玩家存档文件夹...");
-        }
+        loadPlayerData(centre);
 
-        logger.info("正在加载玩家存档...");
-        File[] playerDataFiles = playerDataFolder.listFiles();
-        if (playerDataFiles != null) {
-            for (File dataFile : playerDataFiles) {
-                try {
-                    JsonObject object = JsonParser.parseReader(new FileReader(dataFile)).getAsJsonObject();
-                    ServicePlayerInfo playerInfo = new ServicePlayerInfo(object);
-                    playerInfo.setOnline(false);
-                    centre.getAllPlayerInfo().add(playerInfo);
-                } catch (Exception e) {
-                    logger.error("在加载存档文件 " + file.getName() + " 时遇到了一个异常: ", e);
-                }
-            }
-        }
-        logger.info("玩家存档加载完成.");
-
-        ServerBootstrap bootstrap = new ServerBootstrap();
         NioEventLoopGroup loopGroup = new NioEventLoopGroup(config.getNioThread());
-        bootstrap
+        ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(loopGroup)
                 .channel(NioServerSocketChannel.class)
                 .childOption(ChannelOption.TCP_NODELAY, true)
@@ -74,18 +53,18 @@ public class ServerMain {
         ChannelFuture channelFuture = bootstrap.bind(config.getServiceAddress(), config.getServicePort());
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
-                logger.info("服务器已启动.");
-                logger.info("输入 stop 来关闭该程序.");
-                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
-                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
-                logger.warn("请勿直接点 X 关闭! 否则将无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.info("服务器已启动. 输入 stop 来关闭该程序.");
+                logger.warn("请勿直接点 X 关闭! 否则无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.warn("请勿直接点 X 关闭! 否则无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.warn("请勿直接点 X 关闭! 否则无法保存玩家存档, 将导致许多插件功能异常!");
+                logger.info("若要关闭该程序，请在本控制台使用 stop 命令。");
             } else {
                 logger.error("服务器启动失败: {}", future.cause().toString());
                 loopGroup.shutdownGracefully();
             }
         });
 
-        new CommandHandler(loopGroup, centre, playerDataFolder).startScanConsole();
+        new CommandHandler(loopGroup, centre, PLAYER_DATA_FOLDER).startScanConsole();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -101,6 +80,43 @@ public class ServerMain {
             logger.error("在保存默认配置文件 {} 时遇到了一个错误: {}", name, e);
         }
         return file;
+    }
+
+    private static ServerConfig loadConfig() {
+        File configFile = saveDefaultFile("server.yml");
+        try {
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
+            ServerConfig config = new Yaml().loadAs(reader, ServerConfig.class);
+            reader.close();
+            return config;
+        } catch (Exception e) {
+            logger.error("加载配置文件时遇到了一个异常: ", e);
+            return null;
+        }
+    }
+
+    private static void loadPlayerData(ServiceCentre centre) {
+        if (PLAYER_DATA_FOLDER.mkdirs()) {
+            logger.info("创建玩家存档文件夹...");
+        }
+
+        logger.info("正在加载玩家存档...");
+        File[] playerDataFiles = PLAYER_DATA_FOLDER.listFiles();
+        if (playerDataFiles != null) {
+            for (File dataFile : playerDataFiles) {
+                try {
+                    InputStreamReader reader = new InputStreamReader(new FileInputStream(dataFile), StandardCharsets.UTF_8);
+                    JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
+                    reader.close();
+                    ServicePlayerInfo playerInfo = new ServicePlayerInfo(object);
+                    playerInfo.setOnline(false);
+                    centre.getAllPlayerInfo().add(playerInfo);
+                } catch (Exception e) {
+                    logger.error("加载存档文件 " + dataFile.getName() + " 时遇到了一个异常: ", e);
+                }
+            }
+        }
+        logger.info("玩家存档加载完成.");
     }
 
     @SuppressWarnings("unused")

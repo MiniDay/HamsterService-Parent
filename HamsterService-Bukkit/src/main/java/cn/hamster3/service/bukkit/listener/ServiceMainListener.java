@@ -38,8 +38,6 @@ public class ServiceMainListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-
         UUID uuid = player.getUniqueId();
         Location location = playerToLocations.remove(uuid);
         if (location == null) {
@@ -47,8 +45,8 @@ public class ServiceMainListener implements Listener {
         }
         Bukkit.getScheduler().runTaskLater(
                 HamsterServicePlugin.getInstance(),
-                () -> player.teleport(location, PlayerTeleportEvent.TeleportCause.UNKNOWN),
-                1
+                () -> player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN),
+                20
         );
     }
 
