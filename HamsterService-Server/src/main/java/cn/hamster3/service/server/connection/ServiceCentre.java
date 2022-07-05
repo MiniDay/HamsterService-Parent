@@ -4,10 +4,8 @@ import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;
-import cn.hamster3.service.server.config.ServerConfig;
-import cn.hamster3.service.server.util.ServiceUtils;
+import cn.hamster3.service.server.ServerMain;
 import com.google.gson.JsonPrimitive;
-import com.zaxxer.hikari.HikariDataSource;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -18,9 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 服务中心
@@ -30,17 +27,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     private static final Logger logger = LoggerFactory.getLogger("ServiceCentre");
 
-    private final ConcurrentHashMap<String, ServiceConnection> registeredHandlers;
-    private final ConcurrentHashMap<UUID, ServicePlayerInfo> playerInfo;
-
-    private final HikariDataSource datasource;
+    private final HashSet<ServiceConnection> registeredHandlers;
+    private final HashSet<ServicePlayerInfo> playerInfo;
 
     private final ServiceSenderInfo info;
-    private final ServerConfig config;
+    private final ServerMain.ServerConfig config;
     private boolean safeMode;
 
-    public ServiceCentre(HikariDataSource datasource, ServerConfig config) {
-        this.datasource = datasource;
+    public ServiceCentre(ServerMain.ServerConfig config) {
         this.config = config;
 
         info = new ServiceSenderInfo(
@@ -49,8 +43,8 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                 "服务中心"
         );
         safeMode = false;
-        registeredHandlers = new ConcurrentHashMap<>();
-        playerInfo = new ConcurrentHashMap<>();
+        registeredHandlers = new HashSet<>();
+        playerInfo = new HashSet<>();
         logger.info("服务中心初始化完成.");
     }
 
@@ -84,7 +78,9 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
     }
 
     public void registered(ServiceConnection handler) {
-        registeredHandlers.put(handler.getInfo().getName(), handler);
+        synchronized (registeredHandlers) {
+            registeredHandlers.add(handler);
+        }
         logger.info("服务器 {} 已注册.", handler.getInfo().getName());
 
         broadcastServiceMessage(
@@ -112,9 +108,15 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
                 )
         );
 
-        registeredHandlers.remove(handler.getInfo().getName());
+        synchronized (registeredHandlers) {
+            registeredHandlers.remove(handler);
+        }
 
         logger.info("与服务器 {} 的连接已关闭.", handler.getInfo().getName());
+    }
+
+    public ServiceSenderInfo getInfo() {
+        return info;
     }
 
     public void broadcastMessage(ServiceMessageInfo messageInfo) {
@@ -129,9 +131,11 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             return;
         }
 
-        for (ServiceConnection handler : registeredHandlers.values()) {
-            if (handler.isSubscribedTags(messageInfo.getTag())) {
-                handler.getChannel().writeAndFlush(s);
+        synchronized (registeredHandlers) {
+            for (ServiceConnection handler : registeredHandlers) {
+                if (handler.isSubscribedTags(messageInfo.getTag())) {
+                    handler.getChannel().writeAndFlush(s);
+                }
             }
         }
     }
@@ -148,37 +152,47 @@ public class ServiceCentre extends ChannelInitializer<NioSocketChannel> {
             return;
         }
 
-        for (ServiceConnection handler : registeredHandlers.values()) {
-            handler.getChannel().writeAndFlush(s);
+        synchronized (registeredHandlers) {
+            for (ServiceConnection handler : registeredHandlers) {
+                handler.getChannel().writeAndFlush(s);
+            }
         }
     }
 
     public ServiceConnection getServiceSenderByName(String serverName) {
-        return registeredHandlers.get(serverName);
-    }
-
-    public HikariDataSource getDatasource() {
-        return datasource;
-    }
-
-    public ServiceSenderInfo getInfo() {
-        return info;
-    }
-
-    public void updatePlayerInfo(ServicePlayerInfo info) {
-        playerInfo.put(info.getUuid(), info);
-        try {
-            ServiceUtils.savePlayerData(this, info);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        synchronized (registeredHandlers) {
+            for (ServiceConnection sender : registeredHandlers) {
+                if (serverName.equalsIgnoreCase(sender.getInfo().getName())) {
+                    return sender;
+                }
+            }
         }
+        return null;
     }
 
-    public ConcurrentHashMap<String, ServiceConnection> getRegisteredHandlers() {
+    public ServicePlayerInfo getPlayerInfo(UUID uuid) {
+        synchronized (playerInfo) {
+            for (ServicePlayerInfo playerInfo : playerInfo) {
+                if (uuid.equals(playerInfo.getUuid())) {
+                    return playerInfo;
+                }
+            }
+        }
+        return null;
+    }
+
+    public HashSet<ServiceConnection> getRegisteredHandlers() {
         return registeredHandlers;
     }
 
-    public ConcurrentHashMap<UUID, ServicePlayerInfo> getPlayerInfo() {
+    public void updatePlayerInfo(ServicePlayerInfo info) {
+        synchronized (playerInfo) {
+            playerInfo.remove(info);
+            playerInfo.add(info);
+        }
+    }
+
+    public HashSet<ServicePlayerInfo> getAllPlayerInfo() {
         return playerInfo;
     }
 
