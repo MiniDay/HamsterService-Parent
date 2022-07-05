@@ -45,7 +45,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
     <repositories>
         <repository>
             <id>airgame-public</id>
-            <url>https://maven.airgame.net/repository/maven-public/</url>
+            <url>https://maven.airgame.net/maven-public/</url>
         </repository>
     </repositories>
 
@@ -67,7 +67,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
 
 ```groovy
 repositories {
-    maven { url 'https://maven.airgame.net/repository/maven-public/' }
+    maven { url 'https://maven.airgame.net/maven-public/' }
 }
 
 dependencies {

@@ -97,14 +97,14 @@
     <repositories>
         <repository>
             <id>airgame-public</id>
-            <url>https://maven.airgame.net/repository/maven-public/</url>
+            <url>https://maven.airgame.net/maven-public/</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
             <id>airgame-snapshots</id>
-            <url>https://maven.airgame.net/repository/maven-snapshots/</url>
+            <url>https://maven.airgame.net/maven-snapshots/</url>
         </repository>
     </distributionManagement>
 
