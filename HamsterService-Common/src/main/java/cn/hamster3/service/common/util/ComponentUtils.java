@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ComponentUtils {
-    private static final Gson gson = new GsonBuilder()
+    private static final Gson GSON = new GsonBuilder()
             .setLenient()// json宽松
             .enableComplexMapKeySerialization()//支持Map的key为复杂对象的形式
             .serializeNulls() //智能null
@@ -101,6 +101,6 @@ public class ComponentUtils {
     }
 
     public static Gson getGson() {
-        return gson;
+        return GSON;
     }
 }

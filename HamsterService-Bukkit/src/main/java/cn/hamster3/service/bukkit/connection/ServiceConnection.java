@@ -6,6 +6,7 @@ import cn.hamster3.service.bukkit.event.ServiceConnectEvent;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.entity.ServiceSenderInfo;
 import cn.hamster3.service.common.entity.ServiceSenderType;
+import cn.hamster3.service.common.util.ComponentUtils;
 import cn.hamster3.service.common.util.ServiceLogUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -166,7 +167,7 @@ public class ServiceConnection {
             }
             return;
         }
-        ChannelFuture future = channel.writeAndFlush(info.toString());
+        ChannelFuture future = channel.writeAndFlush(ComponentUtils.getGson().toJson(info.saveToJson()));
         future.addListener((ChannelFutureListener) f -> {
             if (f.isSuccess()) {
                 Bukkit.getPluginManager().callEvent(new MessageSentEvent(info));
