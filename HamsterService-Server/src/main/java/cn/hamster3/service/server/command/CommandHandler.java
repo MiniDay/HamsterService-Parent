@@ -1,14 +1,17 @@
 package cn.hamster3.service.server.command;
 
+import cn.hamster3.service.common.data.ServicePlayerInfo;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.server.connection.ServiceCentre;
-import cn.hamster3.service.server.util.ServiceUtils;
 import com.google.gson.JsonPrimitive;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class CommandHandler {
@@ -16,12 +19,14 @@ public class CommandHandler {
 
     private final NioEventLoopGroup loopGroup;
     private final ServiceCentre centre;
+    private final File playerDataFolder;
 
     private boolean started;
 
-    public CommandHandler(NioEventLoopGroup loopGroup, ServiceCentre centre) {
+    public CommandHandler(NioEventLoopGroup loopGroup, ServiceCentre centre, File playerDataFolder) {
         this.loopGroup = loopGroup;
         this.centre = centre;
+        this.playerDataFolder = playerDataFolder;
     }
 
     public void startScanConsole() {
@@ -86,6 +91,25 @@ public class CommandHandler {
         logger.info("准备关闭服务器...");
         loopGroup.shutdownGracefully().await();
         logger.info("服务器已关闭!");
+
+        logger.info("正在保存玩家存档...");
+        synchronized (centre.getAllPlayerInfo()) {
+            for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
+                try {
+                    OutputStreamWriter writer = new OutputStreamWriter(
+                            new FileOutputStream(
+                                    new File(playerDataFolder, playerInfo.getUuid() + ".json")
+                            ),
+                            StandardCharsets.UTF_8
+                    );
+                    writer.write(playerInfo.saveToJson().toString());
+                    writer.close();
+                } catch (Exception e) {
+                    logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                }
+            }
+        }
+        logger.info("玩家存档保存完毕.");
     }
 
     public void command(String[] args) {
@@ -156,10 +180,17 @@ public class CommandHandler {
 
     public void save() {
         logger.info("正在保存玩家存档...");
-        try {
-            ServiceUtils.saveAllPlayerData(centre);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        synchronized (centre.getAllPlayerInfo()) {
+            for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
+                File dataFile = new File(playerDataFolder, playerInfo.getUuid() + ".json");
+                try {
+                    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(dataFile), StandardCharsets.UTF_8);
+                    writer.write(playerInfo.saveToJson().toString());
+                    writer.close();
+                } catch (Exception e) {
+                    logger.error("保存玩家 " + playerInfo.getUuid() + " 的存档时遇到了一个异常: ", e);
+                }
+            }
         }
         logger.info("玩家存档保存完毕.");
     }

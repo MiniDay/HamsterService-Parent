@@ -105,13 +105,17 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 info = messageInfo.getSenderInfo();
 
                 JsonArray playerInfoArray = new JsonArray();
-                for (ServicePlayerInfo playerInfo : centre.getPlayerInfo().values()) {
-                    playerInfoArray.add(playerInfo.saveToJson());
+                synchronized (centre.getAllPlayerInfo()) {
+                    for (ServicePlayerInfo playerInfo : centre.getAllPlayerInfo()) {
+                        playerInfoArray.add(playerInfo.saveToJson());
+                    }
                 }
 
                 JsonArray senderInfoArray = new JsonArray();
-                for (ServiceConnection connection : centre.getRegisteredHandlers().values()) {
-                    senderInfoArray.add(connection.getInfo().saveToJson());
+                synchronized (centre.getRegisteredHandlers()) {
+                    for (ServiceConnection connection : centre.getRegisteredHandlers()) {
+                        senderInfoArray.add(connection.getInfo().saveToJson());
+                    }
                 }
 
                 JsonObject response = new JsonObject();
@@ -138,7 +142,10 @@ public class ServiceConnection extends SimpleChannelInboundHandler<String> {
                 JsonArray array = messageInfo.getContentAsJsonArray();
                 for (JsonElement element : array) {
                     ServicePlayerInfo playerInfo = new ServicePlayerInfo(element.getAsJsonObject());
-                    centre.updatePlayerInfo(playerInfo);
+                    synchronized (centre.getAllPlayerInfo()) {
+                        centre.getAllPlayerInfo().remove(playerInfo);
+                        centre.getAllPlayerInfo().add(playerInfo);
+                    }
                 }
                 centre.broadcastServiceMessage(messageInfo);
                 break;
