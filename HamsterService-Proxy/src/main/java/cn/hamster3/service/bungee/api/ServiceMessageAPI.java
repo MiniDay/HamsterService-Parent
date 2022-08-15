@@ -11,6 +11,7 @@ import com.google.gson.JsonPrimitive;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -26,6 +27,7 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 public abstract class ServiceMessageAPI {
+    public static final HashSet<String> SUBSCRIBED_TAG = new HashSet<>();
     private static ServiceConnection connection;
 
     /**
@@ -34,6 +36,7 @@ public abstract class ServiceMessageAPI {
      * @param tag 标签
      */
     public static void subscribeTag(String tag) {
+        SUBSCRIBED_TAG.add(tag);
         sendServiceMessage("HamsterService", "subscribeTag", tag);
     }
 
@@ -43,6 +46,7 @@ public abstract class ServiceMessageAPI {
      * @param tag 标签
      */
     public static void unsubscribeTag(String tag) {
+        SUBSCRIBED_TAG.remove(tag);
         sendServiceMessage("HamsterService", "unsubscribeTag", tag);
     }
 
