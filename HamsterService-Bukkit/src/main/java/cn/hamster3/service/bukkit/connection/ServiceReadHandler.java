@@ -1,5 +1,6 @@
 package cn.hamster3.service.bukkit.connection;
 
+import cn.hamster3.service.bukkit.api.ServiceMessageAPI;
 import cn.hamster3.service.bukkit.event.MessageReceivedEvent;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.util.ServiceLogUtils;
@@ -53,6 +54,9 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
                         connection.sendMessage(serviceMessageInfo, false);
                     }
                     connection.getWaitForSendMessages().clear();
+                }
+                for (String s : ServiceMessageAPI.SUBSCRIBED_TAG) {
+                    ServiceMessageAPI.subscribeTag(s);
                 }
                 return false;
             }

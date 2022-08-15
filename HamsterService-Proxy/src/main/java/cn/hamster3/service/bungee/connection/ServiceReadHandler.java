@@ -1,5 +1,6 @@
 package cn.hamster3.service.bungee.connection;
 
+import cn.hamster3.service.bungee.api.ServiceMessageAPI;
 import cn.hamster3.service.bungee.event.MessageReceivedEvent;
 import cn.hamster3.service.common.entity.ServiceMessageInfo;
 import cn.hamster3.service.common.util.ServiceLogUtils;
@@ -54,6 +55,9 @@ public class ServiceReadHandler extends SimpleChannelInboundHandler<String> {
                         connection.sendMessage(messageInfo, false);
                     }
                     connection.getWaitForSendMessages().clear();
+                }
+                for (String s : ServiceMessageAPI.SUBSCRIBED_TAG) {
+                    ServiceMessageAPI.subscribeTag(s);
                 }
                 return false;
             }
