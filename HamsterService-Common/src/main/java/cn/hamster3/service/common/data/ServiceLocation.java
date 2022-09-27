@@ -3,9 +3,13 @@ package cn.hamster3.service.common.data;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class ServiceLocation {
+    @NotNull
     private String serverName;
+    @NotNull
     private String worldName;
     private double x;
     private double y;
@@ -89,7 +93,6 @@ public class ServiceLocation {
         this.x = x;
     }
 
-
     public int getBlockY() {
         return (int) y;
     }
@@ -128,5 +131,18 @@ public class ServiceLocation {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceLocation that = (ServiceLocation) o;
+        return Double.compare(that.x, x) == 0 && Double.compare(that.y, y) == 0 && Double.compare(that.z, z) == 0 && Float.compare(that.yaw, yaw) == 0 && Float.compare(that.pitch, pitch) == 0 && serverName.equals(that.serverName) && worldName.equals(that.worldName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serverName, worldName, x, y, z, yaw, pitch);
     }
 }

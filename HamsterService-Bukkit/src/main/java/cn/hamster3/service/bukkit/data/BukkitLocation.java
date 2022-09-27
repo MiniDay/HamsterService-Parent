@@ -24,16 +24,16 @@ public class BukkitLocation extends ServiceLocation {
         super(object);
     }
 
-    public BukkitLocation(Entity player) {
+    public BukkitLocation(@NotNull Entity player) {
         this(player.getLocation());
     }
 
-    public BukkitLocation(Block block) {
+    public BukkitLocation(@NotNull Block block) {
         this(block.getLocation());
     }
 
     @SuppressWarnings("ConstantConditions")
-    public BukkitLocation(Location location) {
+    public BukkitLocation(@NotNull Location location) {
         super(
                 ServiceInfoAPI.getLocalServerName(),
                 location.getWorld().getName(),
@@ -45,7 +45,7 @@ public class BukkitLocation extends ServiceLocation {
         );
     }
 
-    public BukkitLocation(ServiceLocation location) {
+    public BukkitLocation(@NotNull ServiceLocation location) {
         super(
                 location.getServerName(),
                 location.getWorldName(),
@@ -57,14 +57,13 @@ public class BukkitLocation extends ServiceLocation {
         );
     }
 
+    @NotNull
     public Location toBukkitLocation() {
-        return new Location(
-                Bukkit.getWorld(getWorldName()),
-                getX(),
-                getY(),
-                getZ(),
-                getYaw(),
-                getPitch()
-        );
+        return new Location(Bukkit.getWorld(getWorldName()), getX(), getY(), getZ(), getYaw(), getPitch());
+    }
+
+    @NotNull
+    public BukkitBlockPos toServiceBlockPos() {
+        return new BukkitBlockPos(getServerName(), getWorldName(), getBlockX(), getBlockY(), getBlockZ());
     }
 }
