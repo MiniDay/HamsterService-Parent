@@ -31,9 +31,14 @@ public final class HamsterServicePlugin extends JavaPlugin {
         ServiceLogUtils.setLogger(getLogger());
         saveDefaultConfig();
         reloadConfig();
-        connection = new ServiceConnection(this);
-        serviceInfoAPI = new ServiceInfoAPI(connection);
-        ServiceMessageAPI.init(connection);
+        try {
+            connection = new ServiceConnection(this);
+            serviceInfoAPI = new ServiceInfoAPI(connection);
+            ServiceMessageAPI.init(connection);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getScheduler().runTaskLater(this, Bukkit::shutdown, 1);
+        }
     }
 
     @Override

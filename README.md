@@ -55,7 +55,7 @@ HamsterService 的 转发中心 组件，该组件应该单独启动
             <artifactId>HamsterService-Bukkit</artifactId>
             <!--            如果是开发 BungeeCord 插件的话请更改至这个依赖-->
             <!--            <artifactId>HamsterService-Proxy</artifactId>-->
-            <version>2.8.0-SNAPSHOT</version>
+            <version>2.8.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -71,9 +71,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'cn.hamster3:HamsterService-Bukkit:2.8.0-SNAPSHOT'
+    implementation 'cn.hamster3:HamsterService-Bukkit:2.8.2-SNAPSHOT'
 //    如果是开发 BungeeCord 插件的话请更改至这个依赖
-//    implementation 'cn.hamster3:HamsterService-Proxy:2.8.0-SNAPSHOT'
+//    implementation 'cn.hamster3:HamsterService-Proxy:2.8.2-SNAPSHOT'
 }
 ```
 

@@ -26,9 +26,14 @@ public class HamsterServicePlugin extends Plugin implements Listener {
     public void onLoad() {
         ServiceLogUtils.setLogger(getLogger());
         saveDefaultConfig();
-        connection = new ServiceConnection(this);
-        serviceInfoAPI = new ServiceInfoAPI(connection);
-        ServiceMessageAPI.init(connection);
+        try {
+            connection = new ServiceConnection(this);
+            serviceInfoAPI = new ServiceInfoAPI(connection);
+            ServiceMessageAPI.init(connection);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ProxyServer.getInstance().stop("连接至服务中心失败!");
+        }
     }
 
     @Override
