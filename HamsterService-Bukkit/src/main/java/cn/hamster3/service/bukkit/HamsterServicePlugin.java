@@ -35,7 +35,7 @@ public final class HamsterServicePlugin extends JavaPlugin {
             connection = new ServiceConnection(this);
             serviceInfoAPI = new ServiceInfoAPI(connection);
             ServiceMessageAPI.init(connection);
-        } catch (Exception e) {
+        } catch (Exception | Error e) {
             e.printStackTrace();
             Bukkit.getScheduler().runTaskLater(this, Bukkit::shutdown, 1);
         }
@@ -59,7 +59,11 @@ public final class HamsterServicePlugin extends JavaPlugin {
                 ServiceLogUtils.warning("未找到 PlaceholderAPI 插件, 取消注册占位符.");
             }
         });
-        connection.start();
+        try {
+            connection.start();
+        } catch (Exception | Error e) {
+            Bukkit.getScheduler().runTaskLater(this, Bukkit::shutdown, 2);
+        }
     }
 
     @Override
