@@ -1,0 +1,18 @@
+name: HamsterService-Bukkit
+version: ${project.version}
+main: cn.hamster3.service.bukkit.HamsterServicePlugin
+load: STARTUP
+author: Hamster3
+website: ${project.parent.url}
+description: ${project.parent.description}
+
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  service:
+    permission: service.admin
+
+permissions:
+  service.admin:
+    default: op

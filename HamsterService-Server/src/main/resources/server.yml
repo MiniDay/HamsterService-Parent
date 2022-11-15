@@ -11,6 +11,6 @@ servicePort: 8123
 # 推荐值2： 子服务端数量 / 2
 nioThread: 6
 
-# 允许连接至服务的ip名单
+# 允许连接至服务的 ip 名单
 acceptList:
   - "127.0.0.1"

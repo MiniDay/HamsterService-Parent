@@ -12,6 +12,7 @@
         <module>HamsterService-Common</module>
         <module>HamsterService-Server</module>
         <module>HamsterService-Bukkit</module>
+        <module>HamsterService-Local</module>
         <module>HamsterService-Proxy</module>
     </modules>
 
